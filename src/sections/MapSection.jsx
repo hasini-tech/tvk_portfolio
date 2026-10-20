@@ -28,30 +28,22 @@ export default function MapSection() {
               className="mx-auto h-[420px] max-w-full object-contain drop-shadow-2xl"
             />
 
-            <div className="absolute right-4 bottom-4 w-48 rounded-2xl border-2 border-white bg-[#9d1717] p-3 shadow-2xl md:right-8 md:bottom-8 md:w-56">
+            <div className="absolute right-4 bottom-4 w-64 rounded-2xl border-2 border-white bg-[#9d1717] p-3 shadow-2xl md:right-8 md:bottom-8 md:w-72">
               <p className="mb-2 text-center text-sm font-bold text-white">{text("தஞ்சாவூர்", "Thanjavur")}</p>
               <img
                 src={THANJAVUR_TALUK_MAP_SRC}
                 alt="Thanjavur taluk map"
-                className="h-36 w-full rounded-lg bg-white object-contain"
+                className="h-48 w-full rounded-lg bg-white object-contain md:h-56"
               />
             </div>
           </div>
 
-          <aside className="rounded-2xl border-2 border-white/85 bg-[#a30d0f]/90 p-4 shadow-2xl">
+          <aside className="flex items-center justify-center rounded-2xl border-2 border-white/85 bg-[#a30d0f]/90 p-4 shadow-2xl">
             <img
               src={TVK_POSTER_SRC}
               alt="TVK Thanjavur team"
-              className="h-64 w-full rounded-xl border border-tvk-yellow object-cover object-top md:h-72"
+              className="h-full w-full rounded-xl border border-tvk-yellow object-cover object-top"
             />
-            <div className="mt-4 space-y-3">
-              {["மக்கள் தொடர்பு", "வார்டு சேவை", "நலத்திட்ட உதவி", "புகார் பதிவு"].map((label, index) => (
-                <div key={label} className="flex items-center gap-3 rounded-xl bg-white px-4 py-3 text-tvk-red shadow-sm">
-                  <span className="grid size-6 place-items-center rounded-full bg-tvk-red text-xs font-black text-white">{index + 1}</span>
-                  <span className="font-bold">{text(label, ["Public Contact", "Ward Service", "Welfare Support", "Complaint Registration"][index])}</span>
-                </div>
-              ))}
-            </div>
           </aside>
         </div>
       </div>

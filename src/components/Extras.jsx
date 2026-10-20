@@ -1,7 +1,5 @@
-import { useState } from "react";
 import { PROFILE } from "../data.js";
 import { useLocale } from "../hooks.js";
-import { playWhistleSound } from "./ui.jsx";
 
 function WhatsAppIcon() {
   return (
@@ -11,40 +9,12 @@ function WhatsAppIcon() {
   );
 }
 
-function WhistleMiniIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <circle cx="8" cy="14" r="6" />
-      <path d="M11 9l9-5v5l-6 3" />
-      <circle cx="8" cy="14" r="3" fill="#A00000" />
-    </svg>
-  );
-}
-
-/* Floating helpers: WhatsApp and whistle sound. */
+/* Floating helper: WhatsApp button. */
 export default function Extras() {
   const { text } = useLocale();
-  const [blown, setBlown] = useState(false);
-
-  const handleWhistleClick = () => {
-    playWhistleSound();
-    setBlown(true);
-    setTimeout(() => setBlown(false), 1200);
-  };
 
   return (
     <div className="floaters">
-      <button
-        className={`fab fab-whistle ${blown ? "fab-blown" : ""}`}
-        onClick={handleWhistleClick}
-        aria-label={text("TVK விசில் ஒலி", "Sound TVK Whistle")}
-        title={text("விசில் சத்தம் எழுப்புங்கள்", "Sound TVK Whistle")}
-        type="button"
-      >
-        <WhistleMiniIcon />
-        {blown && <span className="fab-sound-wave" aria-hidden="true">விசில்!</span>}
-      </button>
-
       <a
         className="fab fab-wa"
         href={`https://wa.me/${PROFILE.whatsapp}?text=${encodeURIComponent(`வணக்கம், TVK ${PROFILE.ward} மாமன்ற உறுப்பினருக்கு வார்டு குறைதீர்ப்பு தகவல்:`)}`}

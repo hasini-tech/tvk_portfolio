@@ -3,124 +3,248 @@ import { useLocale } from "../hooks.js";
 
 export default function Footer() {
   const { isTamil, text } = useLocale();
+
+  const homeLinks = NAV_ITEMS.filter((item) =>
+    ["home", "about"].includes(item.id)
+  );
+  const mediaLinks = NAV_ITEMS.filter((item) =>
+    ["gallery", "videos", "articles", "testimonials"].includes(item.id)
+  );
+
   return (
-    <footer className="tvk-footer !bg-white !text-tvk-ink [&_*]:!text-tvk-ink" style={{ background: "#fff" }}>
-      {/* Official Party Flag Ribbon */}
-      <div className="footer-flag-banner" aria-hidden="true">
-        <span className="ff-stripe-red" />
-        <span className="ff-stripe-yellow" />
-        <span className="ff-stripe-red" />
+    <footer style={{ background: "#f5f0eb" }}>
+      {/* Top Section: Image + CTA */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "stretch",
+          maxWidth: 1280,
+          margin: "0 auto",
+        }}
+      >
+        {/* Left: Leader Image */}
+        <div
+          style={{
+            flex: "1 1 420px",
+            minHeight: 340,
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          <img
+            src="/images/tvkvoice.jpeg"
+            alt={`${PROFILE.name} — TVK Leader`}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "top center",
+              display: "block",
+            }}
+          />
+        </div>
+
+        {/* Right: CTA + Tagline */}
+        <div
+          style={{
+            flex: "1 1 420px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            padding: "48px 40px",
+            background: "#f5f0eb",
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: "'Anton', 'Outfit', sans-serif",
+              fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+              color: "#1a1a1a",
+              lineHeight: 1.15,
+              marginBottom: 8,
+            }}
+          >
+            {text(
+              `${PROFILE.constituencyTamil}க்காக ஒன்றிணைவோம்.`,
+              `Together for ${PROFILE.constituency}.`
+            )}
+          </h2>
+
+          <div style={{ display: "flex", gap: 14, marginTop: 24, flexWrap: "wrap" }}>
+            <a
+              href="#contact"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "12px 28px",
+                background: "linear-gradient(135deg, #FFC20E, #E5A800)",
+                color: "#1a1a1a",
+                fontWeight: 700,
+                fontSize: "0.95rem",
+                borderRadius: 10,
+                textDecoration: "none",
+                boxShadow: "0 4px 14px rgba(255,194,14,0.35)",
+                border: "none",
+                cursor: "pointer",
+                transition: "transform 0.2s",
+              }}
+            >
+              {text("மனு சமர்ப்பிக்க", "Submit Petition")}
+              <span style={{ fontSize: "1.1rem" }}>↗</span>
+            </a>
+            <a
+              href="#contact"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "12px 28px",
+                background: "#A00000",
+                color: "#fff",
+                fontWeight: 700,
+                fontSize: "0.95rem",
+                borderRadius: 10,
+                textDecoration: "none",
+                border: "none",
+                cursor: "pointer",
+                transition: "transform 0.2s",
+              }}
+            >
+              {text("மனுவைக் கண்காணிக்க", "Track Petition")}
+            </a>
+          </div>
+        </div>
       </div>
 
-      <div className="wrap footer-content">
-        <div className="footer-columns-grid">
-          {/* Column 1: TVK Emblem & Ideology */}
-          <div className="footer-col-brand">
-            <div className="footer-logo-row">
-              <img
-                src="/images/tvklogo.png"
-                alt="TVK Official Logo"
-                className="footer-logo-img"
-              />
-              <div>
-        <h3 className="footer-party-title">{isTamil ? PROFILE.partyTamil : PROFILE.party}</h3>
-        <p className="footer-party-en">{isTamil ? PROFILE.constituencyTamil : PROFILE.constituency}</p>
-              </div>
-            </div>
-
-            <p className="footer-motto-callout">
-              “{isTamil ? PROFILE.mottoTamil : PROFILE.motto}”
-            </p>
-
-            <p className="footer-brand-desc">
-              {text("மதச்சார்பற்ற சமூக நீதி, பெண்கள் முன்னேற்றம், தூய்மையான நிர்வாகம் மற்றும் தமிழகத்தின் ஒவ்வொரு பகுதியிலும் அளவிடக்கூடிய முன்னேற்றத்திற்காக அர்ப்பணிப்பு.", "Dedicated to secular social justice, women empowerment, clean governance, and measurable progress across every neighborhood of Tamil Nadu.")}
-            </p>
-          </div>
-
-          {/* Column 2: Navigation Links */}
-          <div className="footer-col-nav">
-            <h4 className="footer-col-heading">{text("பிரிவுகள்", "Quick Links")}</h4>
-            <ul className="footer-nav-list">
-              {NAV_ITEMS.map((item) => (
+      {/* Bottom Footer: Navigation + Copyright */}
+      <div
+        style={{
+          background: "#A00000",
+          color: "#fff",
+          borderRadius: "20px 20px 0 0",
+          padding: "36px 40px 28px",
+          maxWidth: 900,
+          marginLeft: "auto",
+          marginTop: -20,
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 32,
+          }}
+        >
+          {/* HOME Column */}
+          <div>
+            <h4
+              style={{
+                fontSize: "0.8rem",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.7)",
+                marginBottom: 14,
+              }}
+            >
+              {text("முகப்பு", "HOME")}
+            </h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+              {homeLinks.map((item) => (
                 <li key={item.id}>
-                  <a href={`#${item.id}`} className="footer-nav-link">
-                    <span className="footer-link-dot">›</span>
-                    <span>{isTamil ? item.ta : item.en}</span>
+                  <a
+                    href={`#${item.id}`}
+                    style={{
+                      color: "#fff",
+                      textDecoration: "none",
+                      fontSize: "0.95rem",
+                      fontWeight: 500,
+                      transition: "opacity 0.2s",
+                    }}
+                  >
+                    {isTamil ? item.ta : item.en === "Home" ? `About ${PROFILE.constituency}` : `About ${PROFILE.name.split(" ")[0]}`}
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Column 3: Ward Office & Party HQ */}
-          <div className="footer-col-contact">
-            <h4 className="footer-col-heading">{text("தொடர்பு", "Official Headquarters")}</h4>
-            <div className="footer-office-block">
-              <p className="footer-office-title">🏛 {text("தலைமை நிலையம்", "Party Central HQ")}:</p>
-              <p className="footer-office-text">{PROFILE.hq}</p>
-            </div>
-
-            <div className="footer-office-block">
-              <p className="footer-office-title">📍 {text("வார்டு அலுவலகம்", "Ward Office")}:</p>
-              <p className="footer-office-text">{PROFILE.office}</p>
-            </div>
-
-            <div className="footer-office-block">
-              <p className="footer-office-title">📞 {text("அவசர உதவி எண்", "Helpline")}:</p>
-              <a href={`tel:${PROFILE.phone.replace(/\s/g, "")}`} className="footer-helpline-link">
-                {PROFILE.phone}
-              </a>
-            </div>
-          </div>
-
-          {/* Column 4: Official Social Channels from tvkvijay.com */}
-          <div className="footer-col-social">
-            <h4 className="footer-col-heading">{text("சமூக ஊடகம்", "Social Media")}</h4>
-            <p className="footer-social-desc">
-              {text("அதிகாரப்பூர்வ சமூக ஊடக இணைப்புகள் வழங்கப்படும் போது இங்கே சேர்க்கப்படும்.", "Official social media links will be added here when provided.")}
-            </p>
-
-            <div className="footer-social-buttons">
-              {PROFILE.social.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="footer-social-pill"
-                >
-                  <span className="social-pill-star">★</span>
-                  <span>{s.label}</span>
-                </a>
+          {/* MEDIA Column */}
+          <div>
+            <h4
+              style={{
+                fontSize: "0.8rem",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.7)",
+                marginBottom: 14,
+              }}
+            >
+              {text("ஊடகம்", "MEDIA")}
+            </h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+              {mediaLinks.map((item) => (
+                <li key={item.id}>
+                  <a
+                    href={`#${item.id}`}
+                    style={{
+                      color: "#fff",
+                      textDecoration: "none",
+                      fontSize: "0.95rem",
+                      fontWeight: 500,
+                      transition: "opacity 0.2s",
+                    }}
+                  >
+                    {isTamil ? item.ta : item.en}
+                  </a>
+                </li>
               ))}
-            </div>
-
-            <div className="footer-sabha-reminder">
-              <span className="sabha-bell">🔔</span>
-              <span>
-                {isTamil ? <><strong>மாதாந்திர மக்கள் சபை:</strong> ஒவ்வொரு மாதமும் முதல் சனிக்கிழமை மாலை 4 மணி.</> : <><strong>Monthly People’s Sabha:</strong> First Saturday of every month at 4 PM.</>}
-              </span>
-            </div>
+            </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="footer-bottom-bar">
-          <div className="footer-bottom-left">
-            <p>
-              © {new Date().getFullYear()} {isTamil ? PROFILE.partyTamil : PROFILE.party} • {isTamil ? PROFILE.nameTamil : PROFILE.name} ({isTamil ? PROFILE.wardTamil : PROFILE.ward}, {isTamil ? PROFILE.corporationTamil : PROFILE.corporation}).
-            </p>
-            <p className="footer-sub-text">
-              {text("மக்கள் பணியே என் பணி • தமிழக மக்களுக்கு பெருமையுடனும் வெளிப்படைத்தன்மையுடனும் சேவை.", "Public service is my duty • Serving the citizens of Tamil Nadu with pride and transparency.")}
-            </p>
-          </div>
-
-          <div className="footer-bottom-right">
-            <a href="#top" className="footer-back-top">
-              <span>{text("மேலே செல்க", "Back to Top")}</span>
-              <span aria-hidden="true">↑</span>
-            </a>
-          </div>
+        {/* Divider */}
+        <div
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.2)",
+            marginTop: 28,
+            paddingTop: 18,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 12,
+          }}
+        >
+          <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.7)", margin: 0 }}>
+            © {new Date().getFullYear()} {isTamil ? PROFILE.partyTamil : PROFILE.party} •{" "}
+            {isTamil ? PROFILE.nameTamil : PROFILE.name}
+          </p>
+          <a
+            href="#top"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              border: "2px solid rgba(255,255,255,0.5)",
+              color: "#fff",
+              textDecoration: "none",
+              fontSize: "1.1rem",
+              transition: "border-color 0.2s",
+            }}
+            aria-label={text("மேலே செல்க", "Back to Top")}
+          >
+            ↑
+          </a>
         </div>
       </div>
     </footer>

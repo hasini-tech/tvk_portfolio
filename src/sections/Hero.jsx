@@ -3,21 +3,6 @@ import { useLocale } from "../hooks.js";
 
 export default function Hero() {
   const { isTamil, text } = useLocale();
-  const tickerItems = isTamil
-    ? [
-        "🚩 தமிழக வெற்றிக் கழகம்",
-        "பிறப்பொக்கும் எல்லா உயிர்க்கும்",
-        "மக்களரசியல் இயக்கம் - மக்கள் பணியே என் பணி",
-        `24/7 வார்டு உதவி எண்: ${PROFILE.phone}`,
-        "மாதாந்திர மக்கள் குறைதீர்ப்பு சபை",
-      ]
-    : [
-        "🚩 Tamilaga Vettri Kazhagam",
-        "All people are born equal",
-        "People-first politics - Public service is my duty",
-        `24/7 Ward Helpline: ${PROFILE.phone}`,
-        "Monthly People’s Grievance Sabha",
-      ];
 
   return (
     <section id="top" className="hero-section">
@@ -53,7 +38,7 @@ export default function Hero() {
 
             {/* Ideological Slogan */}
             <div className="hero-motto-wrap">
-              <span className="hero-motto-quote">“{text(PROFILE.mottoTamil, PROFILE.motto)}”</span>
+              <span className="hero-motto-quote">{"\u201C"}{text(PROFILE.mottoTamil, PROFILE.motto)}{"\u201D"}</span>
             </div>
 
             {/* Candidate / Councillor Title */}
@@ -109,18 +94,6 @@ export default function Hero() {
               className="hero-leader-image"
             />
           </div>
-        </div>
-      </div>
-
-      {/* Hero Bottom Live Ticker */}
-      <div className="hero-bottom-ticker" aria-hidden="true">
-        <div className="ticker-track">
-          {[...tickerItems, ...tickerItems].map((item, index) => (
-            <span key={`${item}-${index}`}>
-              <span className="ticker-item">{item}</span>
-              <span className="ticker-star">★</span>
-            </span>
-          ))}
         </div>
       </div>
     </section>

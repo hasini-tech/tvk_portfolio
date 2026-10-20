@@ -14,7 +14,7 @@ export default function Impact() {
   ];
 
   return (
-    <section id="impact" className="sec !bg-white !text-tvk-ink sec-impact" style={{ background: "#fff" }} ref={ref}>
+    <section id="impact" className="sec sec-impact" ref={ref}>
       <div className="impact-pattern-backdrop hidden" aria-hidden="true" />
       <div className="wrap impact-container">
         {/* Section Header */}
@@ -23,10 +23,10 @@ export default function Impact() {
             <span className="tvk-flag-dot dot-red" />
             <span>{text("களப்பணி மற்றும் சாதனைகள்", "Field Results")}</span>
           </div>
-          <h2 className="section-title-large !text-tvk-red">
+          <h2 className="section-title-large">
             {text("அனுபவம் மற்றும் பொது நல முன்னுரிமைகள்", "Experience & Public Welfare Priorities")}
           </h2>
-          <p className="section-sub-text !text-tvk-ink-muted">
+          <p className="section-sub-text">
             {text("அனுபவம், கட்சி அடையாளம் மற்றும் மக்கள் நல முன்னுரிமைகளின் தெளிவான சுயவிவரம்.", "A clear profile of experience, party identity, and the priorities shared in the client brief.")}
           </p>
           <div className="tvk-dual-bar" aria-hidden="true" />
@@ -36,19 +36,19 @@ export default function Impact() {
         <div className="stats-grid">
           {STATS.map((s, idx) => (
             <Tilt key={s.label} className="stat-card" max={12}>
-              <div className="stat-card-inner !bg-white !text-tvk-ink [&_*]:!text-tvk-ink">
+              <div className="stat-card-inner">
                 <div className="stat-header">
                   <div className="stat-icon-wrapper">
                     <Icon name={s.icon || "award"} size={26} />
                   </div>
-                  <span className="stat-rank-tag !text-tvk-ink/50">0{idx + 1}</span>
+                  <span className="stat-rank-tag">0{idx + 1}</span>
                 </div>
 
                 <div className="stat-num lift">
                   <CountUp to={s.n} suffix={s.suffix} start={seen} />
                 </div>
 
-                <p className="stat-label lift2 !text-tvk-ink">{isTamil ? statLabelsTamil[idx] : s.label}</p>
+                <p className="stat-label lift2">{isTamil ? statLabelsTamil[idx] : s.label}</p>
 
                 <div className="stat-card-bar" aria-hidden="true">
                   <span className="stat-bar-fill" style={{ width: seen ? "100%" : "0%" }} />
@@ -64,7 +64,7 @@ export default function Impact() {
             <span className="highlights-title-badge">{text("பொறுப்புணர்வு மற்றும் விரைவு சேவை", "ACCOUNTABILITY & SPEED OF SERVICE")}</span>
           </div>
           <div className="highlights-grid">
-            {HIGHLIGHTS.map((h) => (
+            {HIGHLIGHTS.map((h, idx) => (
               <div key={h.label} className="highlight-item">
                 <span className="highlight-val">{isTamil ? highlightTamil[idx][0] : h.value}</span>
                 <b className="highlight-lbl">{isTamil ? highlightTamil[idx][0] : h.label}</b>

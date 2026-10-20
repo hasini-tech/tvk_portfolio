@@ -28,7 +28,7 @@ export default function Work() {
   const shown = WORKS.filter((w) => tag === "All" || w.tag === tag);
 
   return (
-    <section id="work" className="sec !bg-white !text-tvk-ink work-section" style={{ background: "#fff" }}>
+    <section id="work" className="sec work-section">
       <div className="wrap">
         {/* Section Header */}
         <div className="section-head-center">
@@ -36,10 +36,10 @@ export default function Work() {
             <span className="tvk-flag-dot" />
             <span>{text("செயல்திட்டம் & களப்பணிகள்", "Public Works")}</span>
           </div>
-          <h2 className="section-title-large !text-tvk-red">
+          <h2 className="section-title-large">
             {text("பொது நலச் செயல்பாடுகள்", "Public Welfare Activities")}
           </h2>
-          <p className="section-sub-text !text-tvk-ink-muted">
+          <p className="section-sub-text">
             {text("சுகாதாரம், அத்தியாவசிய சேவைகள், கட்டமைப்பு மற்றும் சமூக நலனை மையமாகக் கொண்ட நடைமுறை முயற்சிகள்.", "Practical initiatives focused on healthcare, essential services, infrastructure, and community welfare.")}
           </p>
           <div className="tvk-dual-bar" aria-hidden="true" />
@@ -69,7 +69,7 @@ export default function Work() {
             const reportUrl = `https://wa.me/${PROFILE.whatsapp}?text=${encodeURIComponent(`வணக்கம் ${PROFILE.name}, ${w.tag} சம்பந்தமான வார்டு பணி குறித்து:`)}`;
             return (
               <Tilt key={w.title} className="work-card" max={8}>
-                <div className="work-card-inner !bg-white !text-tvk-ink [&_*]:!text-tvk-ink">
+                <div className="work-card-inner">
                   <div className="work-card-top">
                     <div className="work-icon lift3">
                       <Icon name={w.icon} size={28} />
@@ -80,8 +80,8 @@ export default function Work() {
                     </div>
                   </div>
 
-                  <h3 className="work-card-title lift !text-tvk-ink">{isTamil ? workTamil[w.title][0] : w.title}</h3>
-                  <p className="work-card-text lift !text-tvk-ink-muted">{isTamil ? workTamil[w.title][1] : w.text}</p>
+                  <h3 className="work-card-title lift">{isTamil ? workTamil[w.title][0] : w.title}</h3>
+                  <p className="work-card-text lift">{isTamil ? workTamil[w.title][1] : w.text}</p>
 
                   <div className="work-card-footer">
                     {w.impact && (
