@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "../hooks.js";
 
-const VIDEO_SRC = "/video/welcomeflag.mp4";
+const VIDEO_SRC = "/video/welcomeflag.mp4git ";
 const SLIDE_MS = 700;
 
 export default function WelcomeScreen() {
