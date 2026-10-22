@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "../hooks.js";
 
-const VIDEO_SRC = "/video/welcomeflag.mp4git ";
+const VIDEO_SRC = "/video/welcomeflag.mp4";
 const SLIDE_MS = 700;
 
 export default function WelcomeScreen() {
@@ -49,7 +49,8 @@ export default function WelcomeScreen() {
         muted={muted}
         playsInline
         webkit-playsinline="true"
-        preload="auto"
+        preload="metadata"
+        fetchPriority="high"
         disablePictureInPicture
         controls={false}
         onEnded={finish}
