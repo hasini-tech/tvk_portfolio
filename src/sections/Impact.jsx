@@ -1,9 +1,11 @@
+import { useRef } from "react";
 import { STATS, HIGHLIGHTS } from "../data.js";
 import { useInView, useLocale } from "../hooks.js";
-import { CountUp, Tilt, Icon } from "../components/ui.jsx";
+import { CarouselDots, CountUp, Tilt, Icon } from "../components/ui.jsx";
 
 export default function Impact() {
   const [ref, seen] = useInView(0.2);
+  const statsRef = useRef(null);
   const { isTamil, text } = useLocale();
   const statLabelsTamil = ["ஆண்டுகள் அனுபவம்", "TVK உடன் ஆண்டுகள்", "பொது நலச் செயல்பாடுகள்", "தஞ்சாவூர் தொகுதி"];
   const highlightTamil = [
@@ -33,7 +35,7 @@ export default function Impact() {
         </div>
 
         {/* 4 Main Interactive Counter Cards */}
-        <div className="stats-grid">
+        <div className="stats-grid" ref={statsRef}>
           {STATS.map((s, idx) => (
             <Tilt key={s.label} className="stat-card" max={12}>
               <div className="stat-card-inner">
@@ -57,6 +59,11 @@ export default function Impact() {
             </Tilt>
           ))}
         </div>
+        <CarouselDots
+          trackRef={statsRef}
+          count={STATS.length}
+          label={text("சாதனை விவரங்கள்", "Impact statistic slides")}
+        />
 
         {/* Accountability Highlights Strip */}
         <div className="impact-highlights-strip">

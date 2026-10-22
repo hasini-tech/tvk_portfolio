@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { WORKS, PROFILE } from "../data.js";
-import { Icon, Tilt } from "../components/ui.jsx";
+import { CarouselDots, Icon, Tilt } from "../components/ui.jsx";
 import { useLocale } from "../hooks.js";
 
 const TAGS = ["All", ...new Set(WORKS.map((w) => w.tag))];
 
 export default function Work() {
   const [tag, setTag] = useState("All");
+  const worksRef = useRef(null);
   const { isTamil, text } = useLocale();
   const tagTamil = {
     All: "அனைத்தும்",
@@ -64,7 +65,7 @@ export default function Work() {
         </div>
 
         {/* Works Grid */}
-        <div className="works-grid">
+        <div className="works-grid" ref={worksRef}>
           {shown.map((w) => {
             const reportUrl = `https://wa.me/${PROFILE.whatsapp}?text=${encodeURIComponent(`வணக்கம் ${PROFILE.name}, ${w.tag} சம்பந்தமான வார்டு பணி குறித்து:`)}`;
             return (
@@ -76,6 +77,10 @@ export default function Work() {
                     </div>
                     <div className="work-status-tags">
                       <span className="work-tag-category">{isTamil ? tagTamil[w.tag] : w.tag}</span>
+                      <span className="work-live-status">
+                        <Icon name="live" size={13} />
+                        {text("நேரடி புதுப்பிப்பு", "Live updates")}
+                      </span>
                       {w.status && <span className="work-tag-status">{isTamil ? "பொது நலன்" : w.status}</span>}
                     </div>
                   </div>
@@ -106,6 +111,11 @@ export default function Work() {
             );
           })}
         </div>
+        <CarouselDots
+          trackRef={worksRef}
+          count={shown.length}
+          label={text("பொது நலச் செயல்பாடுகள்", "Public welfare activity slides")}
+        />
 
         {/* Bottom CTA */}
         <div className="works-bottom-cta">

@@ -3,11 +3,12 @@ import { useLocale } from "../hooks.js";
 
 /* Put each .mp4 in /public/video/ and add one object here. */
 const VIDEOS = [
-  { src: "/video/Flag_flying_and_human_moving_20261012212428.mp4", title: "TVK Public Service" },
-  { src: "/video/video-2.mp4", title: "Field Work Highlights" },
-  { src: "/video/video-3.mp4", title: "Welfare Activities" },
-  { src: "/video/video-4.mp4", title: "Public Meeting" },
-  { src: "/video/video-5.mp4", title: "Our Journey" },
+  { src: "/video/tvkvideo1.mp4", title: "TVK Video 1" },
+  { src: "/video/tvkvideo2.mp4", title: "Field Work Highlights" },
+  { src: "/video/tvkvideo3.mp4", title: "Welfare Activities" },
+  { src: "/video/tvkvideo4.mp4", title: "Public Meeting" },
+  { src: "/video/tvkvideo5.mp4", title: "Our Journey" },
+  { src: "/video/tvkvideo6.mp4", title: "TVK Video 6" },
 ];
 
 const GAP = 20;
@@ -90,9 +91,9 @@ export default function Videos() {
     width: 44,
     height: 44,
     borderRadius: "50%",
-    border: "2px solid #A00000",
+    border: "2px solid #9e1515",
     background: "#fff",
-    color: "#A00000",
+    color: "#9e1515",
     fontSize: 26,
     lineHeight: 1,
     paddingBottom: 4,

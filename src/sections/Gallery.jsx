@@ -1,244 +1,209 @@
-import { useRef, useState } from "react";
-import { GALLERY, PROFILE } from "../data.js";
+import { useState } from "react";
 import { useLocale } from "../hooks.js";
-import { Modal } from "../components/ui.jsx";
 
-const n = GALLERY.length;
-const step = 360 / n;
-const radius = 340;
+const BASE = "/images/tvkgroup";
+const FALLBACK_IMAGE = `${BASE}/tvkgroup.jpeg`;
+const CARD_W = 252;
+const GAP = 14;
+const LOOP_SECONDS = 40; // lower = faster
 
-/* ---------- Auto-loop strip data ----------
-   Images live in public/images/  ->  served as /images/<file>
-   Each inner array is one column:
-     1 image  = tall card
-     2 images = two stacked cards
-*/
-const img = (file, title, titleTamil, category, date) => ({
-  src: `/images/${file}`,
-  title,
-  titleTamil,
-  category,
-  date,
-});
-
-const STRIP_COLUMNS = [
-  [img("tvkself.jpeg", "Meeting Residents", "மக்கள் சந்திப்பு", "Town Hall", "2026")],
-  [
-    img("tvkgroup/tvkgroup.jpeg", "Team Gathering", "குழு சந்திப்பு", "Leadership", "2026"),
-    img("tvkgroup/tvkgroup1.jpeg", "Volunteers Meet", "தொண்டர்கள் சந்திப்பு", "Leadership", "2026"),
-  ],
-  [img("tvkmarketing.jpeg", "Campaign Vehicle", "பிரச்சார வாகனம்", "Town Hall", "2026")],
-  [
-    img("tvkgroup/tvkgroup2.jpeg", "Ward Rally", "வார்டு பேரணி", "Safety", "2026"),
-    img("tvkgroup/tvkgroup3.jpeg", "Community Event", "சமூக நிகழ்வு", "Health", "2026"),
-  ],
-  [img("tvkselfimg.jpeg", "Citizen Gathering", "மக்கள் கூட்டம்", "Education", "2026")],
-  [
-    img("tvkimages.jpeg", "Field Visit", "களப் பார்வை", "Infrastructure", "2026"),
-    img("tvkimages2.jpeg", "Ward Inspection", "வார்டு ஆய்வு", "Sanitation", "2026"),
-  ],
+// Images used by the gallery, in display order (7 tiles in the layout)
+const IMAGES = [
+  { src: `${BASE}/tvkgroup1.jpeg`, title: "Gallery photo 1", titleTamil: "புகைப்படம் 1" },
+  { src: `${BASE}/tvkgroup2.jpeg`, title: "Gallery photo 2", titleTamil: "புகைப்படம் 2" },
+  { src: `${BASE}/tvkgroup3.jpeg`, title: "Gallery photo 3", titleTamil: "புகைப்படம் 3" },
+  { src: `${BASE}/tvkgroup4.jpeg`, title: "Gallery photo 4", titleTamil: "புகைப்படம் 4" },
+  { src: `${BASE}/tvkgroup5.jpeg`, title: "Gallery photo 5", titleTamil: "புகைப்படம் 5" },
+  { src: `${BASE}/tvkgroup6.jpeg`, title: "Gallery photo 6", titleTamil: "புகைப்படம் 6" },
+  { src: `${BASE}/tvkgroup7.jpeg`, title: "Gallery photo 7", titleTamil: "புகைப்படம் 7" },
 ];
+
+// Each column lists image heights (px). Images are taken from IMAGES in order.
+const COLUMNS = [
+  [270],
+  [215, 160],
+  [377],
+  [143, 233],
+  [268],
+];
+
+const BG = "#f5efeb";
+
+const keyframes = `
+@keyframes galleryLoop {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gallery-loop-track { animation: none !important; }
+  .gallery-loop-viewport { overflow-x: auto !important; }
+}
+`;
+
+const styles = {
+  section: {
+    position: "relative",
+    padding: "70px 0 90px",
+    overflow: "hidden",
+    background: BG,
+  },
+  inner: { position: "relative", zIndex: 2 },
+  heading: {
+    textAlign: "center",
+    margin: "0 0 22px",
+    color: "#9e1515",
+    fontSize: "clamp(2.6rem, 6vw, 4.5rem)",
+    fontWeight: 600,
+    lineHeight: 1,
+  },
+  btnWrap: { display: "flex", justifyContent: "center", marginBottom: 36 },
+  btn: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 14,
+    padding: "8px 8px 8px 20px",
+    borderRadius: 14,
+    border: "1px solid rgba(255,255,255,0.35)",
+    background: "linear-gradient(180deg, #9e1515, #6E0000)",
+    color: "#fff",
+    fontSize: "1.05rem",
+    fontWeight: 700,
+    textDecoration: "none",
+    boxShadow: "0 0 0 6px rgba(160,0,0,0.12), 0 8px 20px rgba(90,6,11,0.3)",
+    cursor: "pointer",
+  },
+  btnArrow: {
+    display: "grid",
+    placeItems: "center",
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    background: "#fff",
+    color: "#9e1515",
+    fontSize: "1.2rem",
+    fontWeight: 700,
+  },
+  img: {
+    display: "block",
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+};
+
+function Tile({ item, height, isTamil }) {
+  const [hover, setHover] = useState(false);
+  const alt = isTamil ? item.titleTamil || item.title : item.title;
+
+  return (
+    <div
+      className="photo-frame photo-frame-gallery"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        height,
+        overflow: "hidden",
+        background: "#FAF7F2",
+        boxShadow: hover
+          ? "0 16px 34px rgba(0,0,0,0.25)"
+          : "0 8px 20px rgba(0,0,0,0.14)",
+        transform: hover ? "scale(1.04)" : "scale(1)",
+        transition: "transform .3s ease, box-shadow .3s ease",
+        position: "relative",
+        zIndex: hover ? 3 : 1,
+      }}
+    >
+      <img
+        src={item.src}
+        alt={alt}
+        loading="lazy"
+        draggable={false}
+        style={styles.img}
+        onError={(e) => {
+          if (!e.currentTarget.src.endsWith(FALLBACK_IMAGE)) {
+            e.currentTarget.src = FALLBACK_IMAGE;
+          }
+        }}
+      />
+    </div>
+  );
+}
+
+// One full set of columns. Rendered twice so the loop is seamless.
+function ColumnSet({ isTamil, hidden }) {
+  let cursor = 0;
+  return COLUMNS.map((heights, colIndex) => (
+    <div
+      key={colIndex}
+      aria-hidden={hidden || undefined}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        gap: GAP,
+        flex: `0 0 ${CARD_W}px`,
+        width: CARD_W,
+        marginRight: GAP,
+      }}
+    >
+      {heights.map((h) => {
+        const item = IMAGES[cursor % IMAGES.length];
+        const key = `${colIndex}-${cursor}`;
+        cursor += 1;
+        return <Tile key={key} item={item} height={h} isTamil={isTamil} />;
+      })}
+    </div>
+  ));
+}
 
 export default function Gallery() {
   const { isTamil, text } = useLocale();
-  const [idx, setIdx] = useState(0);
-  const [viewMode, setViewMode] = useState("strip"); // 'strip' | 'ring'
-  const [lightbox, setLightbox] = useState(null);
-  const drag = useRef(null);
-
-  const current = ((idx % n) + n) % n;
-  const go = (d) => setIdx((i) => i + d);
-
-  const pick = (i) => {
-    let d = i - current;
-    if (d > n / 2) d -= n;
-    if (d < -n / 2) d += n;
-    go(d);
-  };
-
-  const onUp = (e) => {
-    if (drag.current === null) return;
-    const dx = e.clientX - drag.current;
-    if (Math.abs(dx) > 35) go(dx < 0 ? 1 : -1);
-    drag.current = null;
-  };
-
-  const onKey = (e) => {
-    if (e.key === "ArrowRight") go(1);
-    if (e.key === "ArrowLeft") go(-1);
-  };
-
-  const categoryTamil = {
-    All: "அனைத்தும்",
-    Safety: "பாதுகாப்பு",
-    Health: "சுகாதாரம்",
-    "Town Hall": "மக்கள் சபை",
-    Infrastructure: "கட்டமைப்பு",
-    Education: "கல்வி",
-    Sanitation: "தூய்மை",
-    Leadership: "தலைமைத்துவம்",
-  };
+  const [paused, setPaused] = useState(false);
 
   return (
-    <section id="gallery" className="sec bg-white text-tvk-ink gallery-section">
-      <div className="wrap">
-        {/* Section Header */}
-        <div className="section-head-center">
-          <div className="tvk-flag-pill">
-            <span className="tvk-flag-dot dot-red" />
-            <span>{text("காட்சியகம்", "Photo Gallery")}</span>
-          </div>
-          <h2 className="section-title-large text-tvk-red">
-            {text("படங்கள் மற்றும் ஊடகங்களில் நமது வார்டு", "The Ward in Pictures & Media")}
-          </h2>
-          <p className="section-sub-text text-tvk-ink-muted">
-            {text("வார்டு வளர்ச்சிப் பணிகள், நலத்திட்ட விநியோகங்கள் மற்றும் மக்கள் சந்திப்புகளின் காட்சிகள்.", "Glimpses of grassroots ward improvements, welfare distributions, and citizen gatherings.")}
-          </p>
-          <div className="tvk-dual-bar" aria-hidden="true" />
+    <section id="gallery" style={styles.section}>
+      <style>{keyframes}</style>
+
+      <div style={styles.inner}>
+        <h2 style={styles.heading}>{text("காட்சியகம்", "Gallery")}</h2>
+
+        <div style={styles.btnWrap}>
+          <a href="/gallery" style={styles.btn}>
+            {text("அனைத்தையும் பார்", "View All")}
+            <span style={styles.btnArrow}>↗</span>
+          </a>
         </div>
 
-        {/* View Mode & Filter Controls */}
-        <div className="gallery-toolbar">
-          <div className="gallery-mode-toggle" role="group" aria-label={text("காட்சியகப் பார்வை முறை", "Gallery View Mode")}>
-            <button
-              className={`mode-btn ${viewMode === "strip" ? "mode-btn-active" : ""}`}
-              onClick={() => setViewMode("strip")}
-              type="button"
-            >
-              {text("🎞 தொடர் காட்சி", "🎞 Auto Strip")}
-            </button>
-            <button
-              className={`mode-btn ${viewMode === "ring" ? "mode-btn-active" : ""}`}
-              onClick={() => setViewMode("ring")}
-              type="button"
-            >
-              {text("🔄 3D வளையப் பார்வை", "🔄 3D Ring View")}
-            </button>
-          </div>
-
-        </div>
-
-        {/* Auto-looping Strip View */}
-        {viewMode === "strip" && (
+        <div
+          className="gallery-loop-viewport"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onTouchStart={() => setPaused(true)}
+          onTouchEnd={() => setPaused(false)}
+          style={{
+            overflow: "hidden",
+            padding: "24px 0",
+            WebkitMaskImage:
+              "linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)",
+            maskImage:
+              "linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)",
+          }}
+        >
           <div
-            className="strip-viewport"
-            aria-label={text("தானியங்கி புகைப்பட வரிசை", "Auto-scrolling photo strip")}
+            className="gallery-loop-track"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              width: "max-content",
+              animation: `galleryLoop ${LOOP_SECONDS}s linear infinite`,
+              animationPlayState: paused ? "paused" : "running",
+              willChange: "transform",
+            }}
           >
-            <div className="strip-track">
-              {/* rendered twice for a seamless infinite loop */}
-              {[0, 1].map((copy) =>
-                STRIP_COLUMNS.map((col, ci) => (
-                  <div className="strip-col" key={`${copy}-${ci}`} aria-hidden={copy === 1}>
-                    {col.map((item) => (
-                      <button
-                        key={item.src}
-                        type="button"
-                        className={`strip-item ${col.length === 1 ? "strip-tall" : "strip-short"}`}
-                        onClick={() => setLightbox(item)}
-                        tabIndex={copy === 1 ? -1 : 0}
-                      >
-                        <img
-                          src={item.src}
-                          alt={isTamil ? item.titleTamil || item.title : item.title}
-                          loading="lazy"
-                          draggable="false"
-                        />
-                      </button>
-                    ))}
-                  </div>
-                ))
-              )}
-            </div>
+            <ColumnSet isTamil={isTamil} />
+            <ColumnSet isTamil={isTamil} hidden />
           </div>
-        )}
-
-        {/* 3D Ring View */}
-        {viewMode === "ring" && (
-          <div className="ring-container">
-            <p className="gallery-hint">
-              {text("இடது அல்லது வலதுபுறம் இழுக்கவும், அம்புக்குறி விசைகளைப் பயன்படுத்தவும் அல்லது அட்டையை கிளிக் செய்யவும்.", "Drag left or right, use arrow keys, or click any card to inspect.")}
-            </p>
-
-            <div
-              className="ring-wrap"
-              tabIndex={0}
-              onKeyDown={onKey}
-              aria-label={text("3D ஊடாடும் புகைப்பட வளையம்", "3D Interactive Photo Ring")}
-              onPointerDown={(e) => (drag.current = e.clientX)}
-              onPointerUp={onUp}
-              onPointerLeave={() => (drag.current = null)}
-            >
-              <div
-                className="ring"
-                style={{ transform: `translateZ(-${radius}px) rotateY(${-idx * step}deg)` }}
-              >
-                {GALLERY.map((g, i) => {
-                  const isFront = i === current;
-                  return (
-                    <figure
-                      key={g.title + i}
-                      className={`ring-card ${isFront ? "ring-front" : ""}`}
-                      onClick={() => {
-                        if (isFront) setLightbox(g);
-                        else pick(i);
-                      }}
-                      style={{
-                        transform: `rotateY(${i * step}deg) translateZ(${radius}px)`,
-                        backgroundImage: g.src ? `url(${g.src})` : undefined,
-                      }}
-                    >
-                      <div className="ring-card-overlay" />
-                      {!g.src && (
-                        <div className="ring-ph">
-                          <span className="ring-ph-mark">TVK</span>
-                          <small>{text("வார்டு நிகழ்வு", "Ward Event")}</small>
-                        </div>
-                      )}
-                      <figcaption className="ring-cap">
-                        <span className="ring-cap-tag">{isTamil ? categoryTamil[g.category] || "வார்டு நிகழ்வு" : g.category || "Ward Event"}</span>
-                        <b className="ring-cap-title">{isTamil ? g.titleTamil || g.title : g.title}</b>
-                        <small className="ring-cap-date">{g.date} • {text("பெரிதாக்க கிளிக் செய்யவும்", "Click to enlarge")}</small>
-                      </figcaption>
-                    </figure>
-                  );
-                })}
-              </div>
-            </div>
-
-          </div>
-        )}
-
-        {/* Lightbox Modal */}
-        {lightbox && (
-          <Modal
-            isOpen={true}
-            onClose={() => setLightbox(null)}
-            title={isTamil ? lightbox.titleTamil || lightbox.title : lightbox.title}
-            subtitle={`${isTamil ? categoryTamil[lightbox.category] || "வார்டு" : lightbox.category || "Ward"} • ${lightbox.date}`}
-          >
-            <div className="lightbox-content">
-              {lightbox.src ? (
-                <div className="lightbox-img-wrap">
-                  <img src={lightbox.src} alt={lightbox.title} className="lightbox-img" />
-                </div>
-              ) : (
-                <div className="lightbox-ph-wrap">
-                  <span className="lightbox-ph-mark">TVK</span>
-                  <p>{text("வார்டு காப்பகத்திலிருந்து புகைப்படம்", "Photograph from ward archives")}</p>
-                </div>
-              )}
-              <div className="lightbox-details">
-                <h4 className="lightbox-ta">{isTamil ? lightbox.titleTamil || lightbox.title : lightbox.title}</h4>
-                <p className="lightbox-desc">{isTamil ? "திட்டமிட்ட வார்டு ஆய்வின் போது பதிவு செய்யப்பட்ட மக்கள் நலச் செயல்பாடு." : lightbox.desc || "Field activity captured during our scheduled ward inspection."}</p>
-                <div className="lightbox-badges">
-                  <span className="badge-item">📍 {isTamil ? PROFILE.constituencyTamil : PROFILE.constituency}</span>
-                  <span className="badge-item">🗓 {lightbox.date}</span>
-                  <span className="badge-item">🚩 {isTamil ? PROFILE.partyTamil : PROFILE.party}</span>
-                </div>
-              </div>
-            </div>
-          </Modal>
-        )}
+        </div>
       </div>
     </section>
   );

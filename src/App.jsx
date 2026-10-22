@@ -11,7 +11,6 @@ import Journey from "./sections/Journey.jsx";
 import MapSection from "./sections/MapSection.jsx";
 import NewsEvents from "./sections/NewsEvents.jsx";
 import Gallery from "./sections/Gallery.jsx";
-import Plan from "./sections/Plan.jsx";
 import MembershipCTA from "./sections/MembershipCTA.jsx";
 import Contact from "./sections/Contact.jsx";
 import Footer from "./sections/Footer.jsx";
@@ -51,7 +50,6 @@ function HomePage() {
       <MapSection />
       <NewsEvents />
       <Gallery />
-      <Plan />
       <MembershipCTA />
       <Contact />
     </>

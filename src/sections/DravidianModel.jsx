@@ -32,7 +32,7 @@ const modelImages = [
     descTamil: "மதச்சார்பற்ற சமூக நீதி மற்றும் முன்னேற்றச் செயல்பாட்டின் கீழ் தமிழக மக்களை ஒன்றிணைத்தல்.",
   },
   {
-    src: "/images/dravidian-model-3.jpg",
+    src: "/images/tvkselfimg.jpeg",
     name: "சமூக நீதி களம்",
     title: "Social Justice in Action",
     label: "Universal Welfare",

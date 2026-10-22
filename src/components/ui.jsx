@@ -212,6 +212,40 @@ function UsersIcon({ size = 20 }) {
   );
 }
 
+function PhoneIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M6.6 2.5 9.2 2l2.1 5.1-1.8 1.6a16.1 16.1 0 0 0 5.8 5.8l1.6-1.8 5.1 2.1-.5 2.6a2.5 2.5 0 0 1-2.8 2C10.6 18.3 5.7 13.4 4.5 5.3a2.5 2.5 0 0 1 2.1-2.8Z" />
+    </svg>
+  );
+}
+
+function MailIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M3 5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm0 3.2v.4l9 5.6 9-5.6v-.4H3Zm18 2.8-9 5.6-9-5.6V17h18v-6Z" />
+    </svg>
+  );
+}
+
+function FlagIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M5 2h2v20H5V2Zm2 2h12l-3.2 4L19 12H7V4Z" />
+    </svg>
+  );
+}
+
+/* Live / real-time update symbol: a status dot with broadcast waves. */
+function LiveIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="3" fill="currentColor" />
+      <path d="M7.76 7.76a6 6 0 0 0 0 8.48M16.24 7.76a6 6 0 0 1 0 8.48M4.93 4.93a10 10 0 0 0 0 14.14M19.07 4.93a10 10 0 0 1 0 14.14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 const ICON_MAP = {
   water: WaterIcon,
   road: RoadIcon,
@@ -231,12 +265,24 @@ const ICON_MAP = {
   certificate: CertificateIcon,
   external: ExternalIcon,
   users: UsersIcon,
+  phone: PhoneIcon,
+  mail: MailIcon,
+  flag: FlagIcon,
+  live: LiveIcon,
 };
 
 export function Icon({ name, size = 24, className = "" }) {
   const Comp = ICON_MAP[name];
   if (!Comp) return null;
-  return <Comp size={size} className={className} />;
+  return (
+    <span
+      className={`ui-icon ${className}`.trim()}
+      style={{ width: size, height: size }}
+      aria-hidden="true"
+    >
+      <Comp size={size} />
+    </span>
+  );
 }
 
 export function CountUp({ to, suffix = "", start }) {
@@ -287,6 +333,71 @@ export function Tilt({ children, className = "", max = 10 }) {
   return (
     <div ref={ref} className={`tilt ${className}`} onPointerMove={move} onPointerLeave={leave}>
       {children}
+    </div>
+  );
+}
+
+/* Mobile card rows use native horizontal scrolling. These dots mirror the
+   visible card and provide an accessible way to move through the carousel. */
+export function CarouselDots({ trackRef, count, label = "Carousel pages" }) {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || count < 2) return undefined;
+
+    const updateActive = () => {
+      const cards = Array.from(track.children);
+      if (!cards.length) return;
+      const origin = track.getBoundingClientRect().left;
+      let nearest = 0;
+      let distance = Infinity;
+
+      cards.forEach((card, index) => {
+        const cardLeft = card.getBoundingClientRect().left - origin;
+        const nextDistance = Math.abs(cardLeft);
+        if (nextDistance < distance) {
+          distance = nextDistance;
+          nearest = index;
+        }
+      });
+      setActive(nearest);
+    };
+
+    updateActive();
+    track.addEventListener("scroll", updateActive, { passive: true });
+    window.addEventListener("resize", updateActive);
+    return () => {
+      track.removeEventListener("scroll", updateActive);
+      window.removeEventListener("resize", updateActive);
+    };
+  }, [trackRef, count]);
+
+  if (count < 2) return null;
+
+  const goTo = (index) => {
+    const track = trackRef.current;
+    const card = track?.children[index];
+    if (!track || !card) return;
+    track.scrollTo({
+      left: card.offsetLeft - track.offsetLeft,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <div className="mobile-carousel-dots" role="tablist" aria-label={label}>
+      {Array.from({ length: count }, (_, index) => (
+        <button
+          key={index}
+          className={`mobile-carousel-dot ${index === active ? "mobile-carousel-dot-active" : ""}`}
+          type="button"
+          role="tab"
+          aria-label={`Go to slide ${index + 1}`}
+          aria-selected={index === active}
+          onClick={() => goTo(index)}
+        />
+      ))}
     </div>
   );
 }
