@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { CarouselDots } from "../components/ui.jsx";
 import { useLocale } from "../hooks.js";
 
 /* Put each .mp4 in /public/video/ and add one object here. */
@@ -200,6 +201,11 @@ export default function Videos() {
             ›
           </button>
         </div>
+        <CarouselDots
+          trackRef={trackRef}
+          count={VIDEOS.length}
+          label={text("காணொளிகள்", "Video slides")}
+        />
       </div>
     </section>
   );

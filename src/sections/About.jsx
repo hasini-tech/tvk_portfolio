@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ABOUT, ABOUT_TAMIL, PORTFOLIO_CONTENT, PORTFOLIO_CONTENT_TAMIL, PROFILE } from "../data.js";
-import { Tilt, Icon } from "../components/ui.jsx";
+import { CarouselDots, Tilt, Icon } from "../components/ui.jsx";
 import { useLocale } from "../hooks.js";
 
 /* Second image shown under the portrait.
@@ -10,6 +10,8 @@ const FIELD_PHOTO = PROFILE.fieldPhoto || "/images/tvkgroup/tvkgroup2.jpeg";
 export default function About() {
   const { isTamil, text } = useLocale();
   const [fieldPhotoFailed, setFieldPhotoFailed] = useState(false);
+  const welfareActivitiesRef = useRef(null);
+  const commitmentsRef = useRef(null);
 
   const initials = PROFILE.name.split(" ").map((w) => w[0]).slice(0, 2).join("");
   const content = isTamil ? PORTFOLIO_CONTENT_TAMIL : PORTFOLIO_CONTENT;
@@ -199,7 +201,7 @@ export default function About() {
                 <h3 className="about-commitments-title">{text("பொது நலச் செயல்பாடுகள்", "Public Welfare Activities")}</h3>
                 <span className="welfare-heading-note">{text("மக்கள் முதலில் • செயல்பாடு எப்போதும்", "People first • Action always")}</span>
               </div>
-              <ul className="welfare-activities-grid">
+              <ul className="welfare-activities-grid" ref={welfareActivitiesRef}>
                 {content.welfareActivities.map((activity) => (
                   <li className="welfare-activity-card" key={activity.title}>
                     <h4>{activity.title}</h4>
@@ -207,11 +209,16 @@ export default function About() {
                   </li>
                 ))}
               </ul>
+              <CarouselDots
+                trackRef={welfareActivitiesRef}
+                count={content.welfareActivities.length}
+                label={text("பொது நலச் செயல்பாடுகள்", "Public welfare activity slides")}
+              />
             </div>
 
             <div className="about-commitments-block">
               <h3 className="about-commitments-title">{text("நமது வெளிப்படைத்தன்மை கட்டமைப்பு", "Our Transparency Framework")}</h3>
-              <ul className="commitments-cards-row">
+              <ul className="commitments-cards-row" ref={commitmentsRef}>
                 {commitments.map((c) => (
                   <li className="commitment-card" key={c.icon}>
                     <div className="commitment-icon-box" aria-hidden="true">
@@ -224,6 +231,11 @@ export default function About() {
                   </li>
                 ))}
               </ul>
+              <CarouselDots
+                trackRef={commitmentsRef}
+                count={commitments.length}
+                label={text("வெளிப்படைத்தன்மை உறுதிமொழிகள்", "Transparency commitment slides")}
+              />
             </div>
 
             <div className="about-actions-row">

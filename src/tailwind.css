@@ -6275,8 +6275,7 @@ body * {
     overflow-x: auto;
     padding: 2px 4px 18px;
     scroll-snap-type: x mandatory;
-    scrollbar-width: thin;
-    scrollbar-color: var(--tvk-red) transparent;
+    scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -6303,20 +6302,7 @@ body * {
   .gallery-replacement-grid::-webkit-scrollbar,
   .welfare-activities-grid::-webkit-scrollbar,
   .commitments-cards-row::-webkit-scrollbar {
-    height: 5px;
-  }
-
-  .works-grid::-webkit-scrollbar-thumb,
-  .pillars-grid::-webkit-scrollbar-thumb,
-  .stats-grid::-webkit-scrollbar-thumb,
-  .highlights-grid::-webkit-scrollbar-thumb,
-  .events-grid::-webkit-scrollbar-thumb,
-  .gallery-grid-layout::-webkit-scrollbar-thumb,
-  .gallery-replacement-grid::-webkit-scrollbar-thumb,
-  .welfare-activities-grid::-webkit-scrollbar-thumb,
-  .commitments-cards-row::-webkit-scrollbar-thumb {
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--tvk-red), var(--tvk-yellow));
+    display: none;
   }
 }
 
@@ -6665,28 +6651,40 @@ body * {
     gap: 16px;
   }
 
-  #thanjavur-map .grid > div:first-child {
+  #thanjavur-map .map-panel {
     display: flex;
-    min-height: 360px;
+    height: auto !important;
+    min-height: 0;
     flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    overflow: hidden;
   }
 
-  #thanjavur-map .grid > div:first-child > div {
+  #thanjavur-map .map-districts {
     width: 100% !important;
+    min-width: 0;
   }
 
-  #thanjavur-map .grid > div:first-child > div:last-child {
+  #thanjavur-map .map-districts-image {
+    width: min(100%, 300px);
+    max-height: min(78vw, 320px);
+    transform: none !important;
+    scale: 1 !important;
+  }
+
+  #thanjavur-map .map-district-inset {
     width: min(100%, 230px) !important;
-    margin-top: 12px;
+    margin: 0;
     align-self: center;
   }
 
-  #thanjavur-map aside {
+  #thanjavur-map .map-banner {
     min-height: 360px;
     height: 360px !important;
   }
 
-  #thanjavur-map aside img {
+  #thanjavur-map .map-banner img {
     max-height: 330px;
   }
 
@@ -7009,7 +7007,7 @@ body * {
   }
 
   .sec-impact .mobile-carousel-dot {
-    background: rgba(255, 255, 255, 0.45);
+    background: rgba(158, 21, 21, 0.28);
   }
 
   .sec-impact .mobile-carousel-dot-active {

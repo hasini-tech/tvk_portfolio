@@ -6,6 +6,7 @@ import { CarouselDots, CountUp, Tilt, Icon } from "../components/ui.jsx";
 export default function Impact() {
   const [ref, seen] = useInView(0.2);
   const statsRef = useRef(null);
+  const highlightsRef = useRef(null);
   const { isTamil, text } = useLocale();
   const statLabelsTamil = ["ஆண்டுகள் அனுபவம்", "TVK உடன் ஆண்டுகள்", "பொது நலச் செயல்பாடுகள்", "தஞ்சாவூர் தொகுதி"];
   const highlightTamil = [
@@ -70,7 +71,7 @@ export default function Impact() {
           <div className="highlights-header">
             <span className="highlights-title-badge">{text("பொறுப்புணர்வு மற்றும் விரைவு சேவை", "ACCOUNTABILITY & SPEED OF SERVICE")}</span>
           </div>
-          <div className="highlights-grid">
+          <div className="highlights-grid" ref={highlightsRef}>
             {HIGHLIGHTS.map((h, idx) => (
               <div key={h.label} className="highlight-item">
                 <span className="highlight-val">{isTamil ? highlightTamil[idx][0] : h.value}</span>
@@ -79,6 +80,11 @@ export default function Impact() {
               </div>
             ))}
           </div>
+          <CarouselDots
+            trackRef={highlightsRef}
+            count={HIGHLIGHTS.length}
+            label={text("பொது நல முன்னுரிமைகள்", "Public welfare priorities")}
+          />
         </div>
       </div>
     </section>

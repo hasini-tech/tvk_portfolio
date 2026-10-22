@@ -42,18 +42,18 @@ export default function MapSection() {
           {/* LEFT: TN map + Thanjavur inset
               mobile/tablet: side by side in a row
               desktop (lg+): map left, inset absolutely positioned right */}
-          <div className="relative flex h-[440px] items-center justify-between gap-3 rounded-2xl border-2 border-white/85 p-3 sm:h-[520px] sm:gap-5 sm:p-5 lg:h-auto lg:min-h-[600px] lg:justify-start lg:gap-0 lg:p-6">
+          <div className="map-panel relative flex h-[440px] items-center justify-between gap-3 rounded-2xl border-2 border-white/85 p-3 sm:h-[520px] sm:gap-5 sm:p-5 lg:h-auto lg:min-h-[600px] lg:justify-start lg:gap-0 lg:p-6">
             {/* TN map (enlarged) */}
-            <div className="flex w-[62%] items-center justify-center lg:w-auto lg:justify-start">
+            <div className="map-districts flex w-[62%] items-center justify-center lg:w-auto lg:justify-start">
               <img
                 src={TN_DISTRICTS_SRC}
                 alt="Tamil Nadu district map with Thanjavur highlighted"
-                className="h-auto max-h-full w-full scale-125 object-contain drop-shadow-2xl sm:scale-110 lg:ml-[2%] lg:h-[560px] lg:max-h-none lg:w-auto lg:max-w-[68%] lg:origin-left lg:scale-125"
+                className="map-districts-image h-auto max-h-full w-full scale-125 object-contain drop-shadow-2xl sm:scale-110 lg:ml-[2%] lg:h-[560px] lg:max-h-none lg:w-auto lg:max-w-[68%] lg:origin-left lg:scale-125"
               />
             </div>
 
             {/* Thanjavur inset */}
-            <div className="w-[38%] max-w-[230px] rounded-2xl border-2 border-white bg-black/20 p-2 backdrop-blur-sm sm:p-3 lg:absolute lg:right-[6%] lg:top-1/2 lg:w-56 lg:max-w-none lg:-translate-y-1/2">
+            <div className="map-district-inset w-[38%] max-w-[230px] rounded-2xl border-2 border-white bg-black/20 p-2 backdrop-blur-sm sm:p-3 lg:absolute lg:right-[6%] lg:top-1/2 lg:w-56 lg:max-w-none lg:-translate-y-1/2">
               <p className="mb-1 text-center text-xs font-bold sm:text-sm">
                 {text("தஞ்சாவூர்", "Thanjavur")}
               </p>
@@ -75,7 +75,7 @@ export default function MapSection() {
           </div>
 
           {/* RIGHT: banner only */}
-          <aside className="flex h-[440px] flex-col items-center justify-center rounded-2xl border-2 border-white/85 bg-white/10 p-3 shadow-2xl backdrop-blur-sm sm:h-[520px] sm:p-4 lg:h-auto">
+          <aside className="map-banner flex h-[440px] flex-col items-center justify-center rounded-2xl border-2 border-white/85 bg-white/10 p-3 shadow-2xl backdrop-blur-sm sm:h-[520px] sm:p-4 lg:h-auto">
             <img
               src={TVK_BANNER_SRC}
               alt="TVK"

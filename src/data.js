@@ -411,7 +411,7 @@ export const GALLERY = [
     date: "2026",
     category: "Leadership",
     src: "/images/tvk_map.jpeg",
-    desc: "A visual introduction to K. Manikandan and the TVK team working for public welfare.",
+    desc: "A visual introduction to G. Manikandan and the TVK team working for public welfare.",
   },
 ];
 

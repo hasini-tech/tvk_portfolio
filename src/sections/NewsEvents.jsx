@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ANNOUNCEMENTS, EVENTS, PROFILE } from "../data.js";
-import { Icon, Modal } from "../components/ui.jsx";
+import { CarouselDots, Icon, Modal } from "../components/ui.jsx";
 import { useLocale } from "../hooks.js";
 
 const announcementSummaryEn = {
@@ -20,6 +20,7 @@ export default function NewsEvents() {
   const [tab, setTab] = useState("announcements");
   const [activeModal, setActiveModal] = useState(null);
   const [rsvpList, setRsvpList] = useState({});
+  const eventsRef = useRef(null);
 
   const handleRsvp = (id) => {
     setRsvpList((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -119,7 +120,7 @@ export default function NewsEvents() {
 
         {/* Tab 2: Ward Events & Campaigns */}
         {tab === "events" && (
-          <div className="events-grid" role="tabpanel">
+          <div className="events-grid" role="tabpanel" ref={eventsRef}>
             {EVENTS.map((evt) => {
               const hasRsvp = !!rsvpList[evt.id];
               return (
@@ -166,6 +167,13 @@ export default function NewsEvents() {
               );
             })}
           </div>
+        )}
+        {tab === "events" && (
+          <CarouselDots
+            trackRef={eventsRef}
+            count={EVENTS.length}
+            label={text("நிகழ்ச்சி விவரங்கள்", "Ward event slides")}
+          />
         )}
 
         {/* Modal for viewing announcement details */}

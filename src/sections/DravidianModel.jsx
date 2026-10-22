@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IDEOLOGY_PILLARS } from "../data.js";
-import { Icon } from "../components/ui.jsx";
+import { CarouselDots, Icon } from "../components/ui.jsx";
 import { useLocale } from "../hooks.js";
 
 const modelImages = [
@@ -14,7 +14,7 @@ const modelImages = [
     descTamil: "தமிழர் பெருமை, மாநில உரிமைகள் மற்றும் ஜனநாயக திராவிட ஆட்சியின் முன்னோடி.",
   },
   {
-    src: "/images/periyar.jpeg",
+    src: "/images/tvkselfimg.jpeg",
     name: "தந்தை பெரியார்",
     title: "Thanthai Periyar",
     label: "Self-Respect & Social Justice",
@@ -83,6 +83,7 @@ export default function DravidianModel() {
   const { isTamil, text } = useLocale();
   const [activeLeader, setActiveLeader] = useState(0);
   const [activePillar, setActivePillar] = useState(0);
+  const pillarsRef = useRef(null);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
@@ -116,7 +117,7 @@ export default function DravidianModel() {
         </div>
 
         {/* 4 Core Pillars Tabs inspired by tvkvijay.com */}
-        <div className="pillars-grid">
+        <div className="pillars-grid" ref={pillarsRef}>
           {IDEOLOGY_PILLARS.map((pillar, idx) => {
             const isSel = idx === activePillar;
             return (
@@ -138,6 +139,11 @@ export default function DravidianModel() {
             );
           })}
         </div>
+        <CarouselDots
+          trackRef={pillarsRef}
+          count={IDEOLOGY_PILLARS.length}
+          label={text("கொள்கை முன்னுரிமைகள்", "Core principle slides")}
+        />
 
         {/* Split Details: Active Pillar Content & Fanned Leaders 3D Deck */}
         <div className="model-grid">
