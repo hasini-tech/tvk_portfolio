@@ -16,6 +16,7 @@ import Contact from "./sections/Contact.jsx";
 import Footer from "./sections/Footer.jsx";
 import Videos from "./sections/Videos.jsx";
 import Testimonials from "./sections/Testimonials.jsx";
+import KeyMoments from "./sections/KeyMoments.jsx";
 import WelcomeScreen from "./components/WelcomeScreen.jsx";
 import { useLocale } from "./hooks.js";
 
@@ -43,6 +44,7 @@ function HomePage() {
     <>
       <Hero />
       <DravidianModel />
+      <KeyMoments />   {/* new: right, left, right flip images */}
       <About />
       <Impact />
       <Work />

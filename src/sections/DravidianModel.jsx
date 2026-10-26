@@ -1,26 +1,190 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { IDEOLOGY_PILLARS } from "../data.js";
 import { CarouselDots, Icon } from "../components/ui.jsx";
 import { useLocale } from "../hooks.js";
 
+// Carousel CSS is inlined here, so no separate leader-carousel.css file is needed
+const LEADER_CAROUSEL_CSS = `
+/* ---------- Coverflow leaders carousel ---------- */
+.lc {
+  --lc-w: 300px;
+  --lc-h: 380px;
+  --lc-step: 215px;
+  width: 100%;
+}
+
+.lc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+.lc-head-title { font-weight: 700; }
+.lc-head-count { font-size: 0.85rem; opacity: 0.7; }
+
+.lc-stage {
+  position: relative;
+  height: calc(var(--lc-h) + 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.lc-card {
+  --abs: 0;
+  --offset: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--lc-w);
+  height: var(--lc-h);
+  margin: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #111;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  transform:
+    translate(-50%, -50%)
+    translateX(calc(var(--offset) * var(--lc-step)))
+    scale(calc(1 - var(--abs) * 0.2));
+  z-index: calc(10 - var(--abs));
+  filter: brightness(calc(1 - var(--abs) * 0.12));
+  opacity: 1;
+  transition: transform 0.55s cubic-bezier(0.22, 0.8, 0.25, 1),
+              filter 0.55s ease, opacity 0.55s ease, box-shadow 0.55s ease;
+  will-change: transform;
+}
+.lc-card-active {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  cursor: default;
+}
+.lc-card[style*="--abs: 3"],
+.lc-card[style*="--abs:3"] { opacity: 0; pointer-events: none; }
+
+.lc-card:focus-visible { outline: 3px solid #ffd54a; outline-offset: 3px; }
+
+.lc-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+}
+
+.lc-fallback {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #7a0c13, #c8102e);
+  color: #ffd54a;
+  font-weight: 800;
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+}
+
+.lc-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  max-width: calc(100% - 24px);
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(60, 60, 60, 0.7);
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lc-cap {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 18px 18px 20px;
+  color: #fff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.35));
+  backdrop-filter: blur(4px);
+}
+.lc-name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.lc-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  color: #111;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.lc-arrow:hover { transform: translateY(-50%) scale(1.1); }
+.lc-arrow:focus-visible { outline: 3px solid #ffd54a; outline-offset: 2px; }
+.lc-arrow-prev { left: 8px; }
+.lc-arrow-next { right: 8px; }
+
+.lc-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+.lc-dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(128, 128, 128, 0.45);
+  cursor: pointer;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+.lc-dot-active { width: 26px; background: #c8102e; }
+
+@media (max-width: 900px) {
+  .lc { --lc-w: 240px; --lc-h: 320px; --lc-step: 165px; }
+}
+@media (max-width: 520px) {
+  .lc { --lc-w: 210px; --lc-h: 290px; --lc-step: 120px; }
+  .lc-arrow { width: 32px; height: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lc-card, .lc-dot, .lc-arrow { transition: none; }
+}
+`;
+
 const modelImages = [
+  {
+    src: "/images/periyarimg.png",
+    name: "தந்தை பெரியார்",
+    title: "Thanthai Periyar",
+    label: "Self-Respect & Social Justice",
+    labelTamil: "சுயமரியாதை மற்றும் சமூக நீதி",
+  },
   {
     src: "/images/annadurai.png",
     name: "பேரறிஞர் அண்ணா",
     title: "Perarignar Anna",
     label: "Duty, Dignity, Discipline",
     labelTamil: "கடமை, கண்ணியம், கட்டுப்பாடு",
-    desc: "Architect of Tamil pride, state rights, and democratic Dravidian governance.",
-    descTamil: "தமிழர் பெருமை, மாநில உரிமைகள் மற்றும் ஜனநாயக திராவிட ஆட்சியின் முன்னோடி.",
-  },
-  {
-    src: "/images/tvkselfimg.jpeg",
-    name: "தந்தை பெரியார்",
-    title: "Thanthai Periyar",
-    label: "Self-Respect & Social Justice",
-    labelTamil: "சுயமரியாதை மற்றும் சமூக நீதி",
-    desc: "Champion of rationalism, gender equality, and eradication of social hierarchy.",
-    descTamil: "பகுத்தறிவு, பாலின சமத்துவம் மற்றும் சமூகப் பாகுபாட்டை ஒழித்தலின் முன்னோடி.",
   },
   {
     src: "/images/tvkvijay.png",
@@ -28,8 +192,6 @@ const modelImages = [
     title: "TVK Leader Vijay",
     label: "People-First Politics",
     labelTamil: "மக்கள் முன்னுரிமை அரசியல்",
-    desc: "Uniting the people of Tamil Nadu under secular social justice and progressive action.",
-    descTamil: "மதச்சார்பற்ற சமூக நீதி மற்றும் முன்னேற்றச் செயல்பாட்டின் கீழ் தமிழக மக்களை ஒன்றிணைத்தல்.",
   },
   {
     src: "/images/tvkselfimg.jpeg",
@@ -37,67 +199,90 @@ const modelImages = [
     title: "Social Justice in Action",
     label: "Universal Welfare",
     labelTamil: "அனைவருக்குமான நலன்",
-    desc: "Ensuring every household receives equal opportunity, clean water, and civic dignity.",
-    descTamil: "ஒவ்வொரு குடும்பத்திற்கும் சம வாய்ப்பு, தூய்மையான குடிநீர் மற்றும் குடிமை மரியாதை கிடைப்பதை உறுதி செய்தல்.",
   },
 ];
 
-function LeaderCard({ item, slot, isActive, onSelect, isTamil }) {
+// Positive modulo (works for negative numbers)
+const mod = (n, m) => ((n % m) + m) % m;
+
+// Cards rendered on each side of the active one. Offsets ±3 are invisible
+// (CSS fades them out) so cards slide in and out instead of jumping across.
+const SIDE = 3;
+const OFFSETS = Array.from({ length: SIDE * 2 + 1 }, (_, i) => i - SIDE);
+
+function LeaderCard({ item, offset, isTamil, onSelect }) {
   const [failed, setFailed] = useState(false);
+  const isActive = offset === 0;
+  const name = isTamil ? item.name : item.title;
 
   return (
     <figure
-      className={`model-card model-slot-${slot} ${isActive ? "model-card-active" : ""}`}
-      style={{ "--slot": slot, zIndex: modelImages.length - slot }}
+      className={`lc-card ${isActive ? "lc-card-active" : ""}`}
+      style={{ "--offset": offset, "--abs": Math.abs(offset) }}
       onClick={onSelect}
       role="button"
-      tabIndex={0}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onSelect(); }}
+      tabIndex={isActive ? 0 : -1}
       aria-label={isTamil ? `${item.name} பார்க்க` : `View ${item.title}`}
+      aria-current={isActive}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect();
+        }
+      }}
     >
-      <div className="model-card-inner">
-        {!failed ? (
-          <img
-            src={item.src}
-            alt={isTamil ? item.name : item.title}
-            onError={() => setFailed(true)}
-            className="model-card-photo"
-          />
-        ) : (
-          <div className="model-card-fallback" aria-label={`${item.title} placeholder`} role="img">
-            <span className="model-card-fallback-mark">TVK</span>
-            <small>{isTamil ? item.name : item.title}</small>
-          </div>
-        )}
-        <div className="model-card-gloss" />
-        <figcaption className="model-card-cap">
-          <p className="model-card-name-ta">{isTamil ? item.name : item.title}</p>
-          <span className="model-card-tag">{isTamil ? item.labelTamil : item.label}</span>
-        </figcaption>
-      </div>
+      {!failed ? (
+        <img src={item.src} alt={name} className="lc-photo" onError={() => setFailed(true)} draggable="false" />
+      ) : (
+        <div className="lc-fallback" role="img" aria-label={`${item.title} placeholder`}>
+          <span>TVK</span>
+        </div>
+      )}
+
+      <span className="lc-badge">{isTamil ? item.labelTamil : item.label}</span>
+
+      <figcaption className="lc-cap">
+        <p className="lc-name">{name}</p>
+      </figcaption>
     </figure>
   );
 }
 
 export default function DravidianModel() {
   const { isTamil, text } = useLocale();
-  const [activeLeader, setActiveLeader] = useState(0);
+  // `pos` is an ever-growing counter (never wraps), so the last card slides
+  // smoothly into the first one instead of flying across the stage.
+  const [pos, setPos] = useState(0);
+  const [paused, setPaused] = useState(false);
   const [activePillar, setActivePillar] = useState(0);
   const pillarsRef = useRef(null);
+  const total = modelImages.length;
+  const activeLeader = mod(pos, total);
 
+  const goLeader = useCallback((dir) => setPos((p) => p + dir), []);
+
+  // Jump to image `i` by the shortest way round
+  const selectLeader = (i) =>
+    setPos((p) => {
+      let diff = mod(i - p, total);
+      if (diff > total / 2) diff -= total;
+      return p + diff;
+    });
+
+  // Autoplay: off for reduced-motion users, paused while hovering/focusing the carousel
   useEffect(() => {
     const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-    if (reduceMotion) return undefined;
-    const timer = window.setInterval(() => {
-      setActiveLeader((curr) => (curr + 1) % modelImages.length);
-    }, 4000);
+    if (reduceMotion || paused) return undefined;
+    const timer = window.setInterval(() => goLeader(1), 4000);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [paused, goLeader]);
 
   const currentPillar = IDEOLOGY_PILLARS[activePillar] || IDEOLOGY_PILLARS[0];
 
   return (
     <section id="model" className="model-sec">
+      <style>{LEADER_CAROUSEL_CSS}</style>
+
       <div className="wrap">
         {/* Section Header */}
         <div className="section-head-center">
@@ -116,7 +301,7 @@ export default function DravidianModel() {
           <div className="tvk-dual-bar" aria-hidden="true" />
         </div>
 
-        {/* 4 Core Pillars Tabs inspired by tvkvijay.com */}
+        {/* 4 Core Pillars Tabs */}
         <div className="pillars-grid" ref={pillarsRef}>
           {IDEOLOGY_PILLARS.map((pillar, idx) => {
             const isSel = idx === activePillar;
@@ -145,75 +330,79 @@ export default function DravidianModel() {
           label={text("கொள்கை முன்னுரிமைகள்", "Core principle slides")}
         />
 
-        {/* Split Details: Active Pillar Content & Fanned Leaders 3D Deck */}
-        <div className="model-grid">
-          {/* Active Pillar Deep Dive */}
-          <div className="pillar-detail-card">
-            <div className="pillar-detail-inner">
-              <div className="pillar-badge-strip">
-                <span className="pillar-current-index">{isTamil ? `கொள்கை ${activePillar + 1}` : `PILLAR 0${activePillar + 1}`}</span>
-                <span className="pillar-current-name">{isTamil ? currentPillar.title : currentPillar.titleEn}</span>
-              </div>
+        {/* Active pillar details */}
+        <div className="pillar-detail-card">
+          <div className="pillar-detail-inner">
+            <div className="pillar-badge-strip">
+              <span className="pillar-current-index">{isTamil ? `கொள்கை ${activePillar + 1}` : `PILLAR 0${activePillar + 1}`}</span>
+              <span className="pillar-current-name">{isTamil ? currentPillar.title : currentPillar.titleEn}</span>
+            </div>
 
-              <h3 className="pillar-display-title">
-                {isTamil ? currentPillar.title : currentPillar.titleEn}
-              </h3>
+            <h3 className="pillar-display-title">
+              {isTamil ? currentPillar.title : currentPillar.titleEn}
+            </h3>
 
-              <blockquote className="pillar-quote">
-                “{currentPillar.quote}”
-              </blockquote>
+            <blockquote className="pillar-quote">“{currentPillar.quote}”</blockquote>
 
-              <p className="model-text">
-                {isTamil ? currentPillar.quote : currentPillar.desc}
-              </p>
+            <p className="model-text">{isTamil ? currentPillar.quote : currentPillar.desc}</p>
 
-              <div className="pillar-cta-row">
-                <a className="model-link" href="#about">
-                  <span>{text("அறிமுகம்", "About Ward Councillor")}</span>
-                  <span aria-hidden="true">→</span>
-                </a>
-                <a className="btn btn-outline" href="#plan">
-                  <span>{text("100-நாள் திட்டம்", "100-Day Promises")}</span>
-                </a>
-              </div>
+            <div className="pillar-cta-row">
+              <a className="model-link" href="#about">
+                <span>{text("அறிமுகம்", "About Ward Councillor")}</span>
+                <span aria-hidden="true">→</span>
+              </a>
+              <a className="btn btn-outline" href="#plan">
+                <span>{text("100-நாள் திட்டம்", "100-Day Promises")}</span>
+              </a>
             </div>
           </div>
+        </div>
 
-          {/* Leaders 3D Carousel Stack */}
-          <div className="model-leaders-column">
-            <div className="leaders-deck-header">
-              <span className="leaders-deck-title">{text("கொள்கை வழிகாட்டிகள்", "Ideological Guides")}</span>
-              <span className="leaders-deck-counter">{activeLeader + 1} / {modelImages.length}</span>
-            </div>
+        {/* Leaders coverflow carousel */}
+        <div
+          className="lc"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocus={() => setPaused(true)}
+          onBlur={() => setPaused(false)}
+        >
+          <div className="lc-head">
+            <span className="lc-head-title">{text("கொள்கை வழிகாட்டிகள்", "Ideological Guides")}</span>
+            <span className="lc-head-count">{activeLeader + 1} / {total}</span>
+          </div>
 
-            <div className="model-gallery" aria-label="Movement leadership photographs" aria-live="polite">
-              {modelImages.map((image, index) => {
-                const slot = (index - activeLeader + modelImages.length) % modelImages.length;
-                return (
-                  <LeaderCard
-                    key={image.src + index}
-                    item={image}
-                    isTamil={isTamil}
-                    slot={slot}
-                    isActive={slot === 0}
-                    onSelect={() => setActiveLeader(index)}
-                  />
-                );
-              })}
-            </div>
-
-            {/* Leader Navigation Dots */}
-            <div className="model-gallery-controls">
-              {modelImages.map((img, i) => (
-                <button
-                  key={i}
-                  className={`model-dot ${i === activeLeader ? "model-dot-active" : ""}`}
-                  onClick={() => setActiveLeader(i)}
-                  aria-label={`View ${img.name}`}
-                  type="button"
+          <div className="lc-stage" aria-live="polite" aria-label="Movement leadership photographs">
+            {OFFSETS.map((offset) => {
+              const v = pos + offset; // virtual index; key stays with the card as it moves
+              return (
+                <LeaderCard
+                  key={v}
+                  item={modelImages[mod(v, total)]}
+                  isTamil={isTamil}
+                  offset={offset}
+                  onSelect={() => setPos(v)}
                 />
-              ))}
-            </div>
+              );
+            })}
+
+            <button type="button" className="lc-arrow lc-arrow-prev" onClick={() => goLeader(-1)} aria-label={text("முந்தையது", "Previous")}>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+            </button>
+            <button type="button" className="lc-arrow lc-arrow-next" onClick={() => goLeader(1)} aria-label={text("அடுத்தது", "Next")}>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+            </button>
+          </div>
+
+          <div className="lc-dots">
+            {modelImages.map((img, i) => (
+              <button
+                key={img.src}
+                type="button"
+                className={`lc-dot ${i === activeLeader ? "lc-dot-active" : ""}`}
+                onClick={() => selectLeader(i)}
+                aria-label={`View ${img.title}`}
+              />
+            ))}
           </div>
         </div>
       </div>
