@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ISSUE_TYPES, PROFILE } from "../data.js";
-import { useStored, useLocale } from "../hooks.js";
+import { useLocale } from "../hooks.js";
 import { Tilt, Icon } from "../components/ui.jsx";
 
 const ticketId = () =>
@@ -22,9 +22,6 @@ export default function Contact() {
   const empty = { name: "", phone: "", type: ISSUE_TYPES[0], msg: "" };
   const [form, setForm] = useState(empty);
   const [last, setLast] = useState(null);
-  const [tickets, setTickets] = useStored("ward-tickets", []);
-  const [q, setQ] = useState("");
-  const [found, setFound] = useState(undefined);
   const [copied, setCopied] = useState(false);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
@@ -44,16 +41,17 @@ export default function Contact() {
         { label: "Problem Resolved", time: "Within 48h SLA", done: false },
       ],
     };
-    setTickets([ticket, ...tickets].slice(0, 25));
     setLast(ticket);
-    setForm(empty);
-  };
 
-  const track = (e) => {
-    e.preventDefault();
-    const query = q.trim().toUpperCase();
-    if (!query) return;
-    setFound(tickets.find((t) => t.id === query) || null);
+    const categoryName = isTamil ? (issueTamil[form.type] || form.type) : form.type;
+    const waText = isTamil
+      ? `வணக்கம் ${PROFILE.nameTamil || PROFILE.name},\n\n*வார்டு புகார் மனு:*\n📌 *புகார் எண்:* ${newId}\n👤 *பெயர்:* ${form.name}\n📞 *தொலைபேசி:* ${form.phone}\n📂 *பிரிவு:* ${categoryName}\n📝 *விவரம்:* ${form.msg}`
+      : `Hello ${PROFILE.name},\n\n*Ward Grievance Submission:*\n📌 *Ticket ID:* ${newId}\n👤 *Name:* ${form.name}\n📞 *Phone:* ${form.phone}\n📂 *Category:* ${categoryName}\n📝 *Details:* ${form.msg}`;
+
+    const waUrl = `https://wa.me/${PROFILE.whatsapp}?text=${encodeURIComponent(waText)}`;
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+
+    setForm(empty);
   };
 
   const copyTicket = (id) => {
@@ -61,10 +59,6 @@ export default function Contact() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
-  const wa = `https://wa.me/${PROFILE.whatsapp}?text=${encodeURIComponent(
-    `வணக்கம் ${PROFILE.name}, எனது வார்டு புகார்:\nபிரிவு: ${form.type}\nவிவரம்: ${form.msg}\nபெயர்: ${form.name || "பொதுமகன்"}`
-  )}`;
 
   return (
     <section id="contact" className="sec !bg-white !text-tvk-ink contact-section" style={{ background: "#fff" }}>
@@ -139,84 +133,44 @@ export default function Contact() {
               </ul>
             </div>
 
-            {/* Ticket Tracking Dashboard */}
-            <div className="ticket-tracker-box !bg-white !text-tvk-ink [&_*]:!text-tvk-ink">
-              <h4 className="tracker-heading">
-                <Icon name="checkCircle" size={18} />
-                <span>{text("புகார் நிலையை அறிய", "Track Ticket Status")}</span>
-              </h4>
-              <p className="tracker-sub">{text("இந்த சாதனத்தில் உருவாக்கப்பட்ட புகார் எண்ணை உள்ளிட்டு முன்னேற்றத்தைப் பார்க்கவும்.", "Enter the ticket number generated on this device to check live progress.")}</p>
+            {/* Office Location Map */}
+            <div className="contact-map-box mt-6 overflow-hidden rounded-[24px] bg-white p-6 shadow-sm">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-tvk-red/10 text-tvk-red">
+                    <Icon name="mapPin" size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-heading text-lg font-bold text-tvk-red">
+                      {text("அலுவலக அமைவிடம்", "Office Location Map")}
+                    </h4>
+                    <p className="text-xs text-tvk-ink-muted">
+                      {text("நேரடியாக அலுவலகத்திற்கு வர வரைபடம்", "Navigate directly to our ward office")}
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(PROFILE.office)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-tvk-yellow/20 px-3 py-1.5 text-xs font-bold text-tvk-red transition-all hover:bg-tvk-yellow hover:text-tvk-red-night"
+                  title={text("Google Maps-இல் திறக்க", "Open in Google Maps")}
+                >
+                  <span>{text("வழிகாட்டி", "Directions")}</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
 
-              <form className="track-form-row" onSubmit={track}>
-                <input
-                  id="trk"
-                  placeholder="e.g. TH-ABC12"
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  className="tracker-input"
-                  aria-label="Enter Ticket number"
+              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-slate-100 shadow-inner sm:aspect-[16/9]">
+                <iframe
+                  title="Ward Office Location Map"
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(PROFILE.office)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                  className="h-full w-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
                 />
-                <button className="btn btn-yellow track-btn" type="submit">
-                  {text("சரிபார்க்க", "Check")}
-                </button>
-              </form>
-
-              {found && (
-                <div className="track-result-card">
-                  <div className="result-top">
-                    <span className="result-id">{found.id}</span>
-                    <span className="result-status-badge">{found.status || "Received"}</span>
-                  </div>
-                  <p className="result-meta">
-                    <b>பிரிவு:</b> {found.type} • <b>தேதி:</b> {found.date}
-                  </p>
-                  {found.msg && <p className="result-msg">“{found.msg}”</p>}
-
-                  {/* Status Timeline */}
-                  <div className="result-timeline">
-                    <div className="res-tl-item tl-done">
-                      <span className="res-tl-dot">✓</span>
-                    <span>{text("பெறப்பட்டு பதிவு செய்யப்பட்டது", "Received & Logged")}</span>
-                    </div>
-                    <div className="res-tl-item tl-active">
-                      <span className="res-tl-dot">⏳</span>
-                    <span>{text("களப்பணிக் குழுவிடம் ஒப்படைக்கப்பட்டது", "Assigned to Field Team")}</span>
-                    </div>
-                    <div className="res-tl-item">
-                      <span className="res-tl-dot">○</span>
-                    <span>{text("தீர்வு மற்றும் குடிமக்கள் சரிபார்ப்பு", "Resolution & Citizen Verification")}</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {found === null && (
-                <div className="track-not-found">
-                    <span>{text(`⚠️ "${q}" என்ற புகார் எண் கிடைக்கவில்லை. எண்ணைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.`, `⚠️ No ticket found with ID "${q}". Please check the number and try again.`)}</span>
-                </div>
-              )}
-
-              {/* Recent tickets list */}
-              {tickets.length > 0 && !found && (
-                <div className="recent-tickets-tray">
-                    <span className="recent-tickets-label">{text("இந்த சாதனத்தில் சமீபத்தில் பதிவு செய்யப்பட்ட புகார்கள்:", "Recently logged tickets on this device:")}</span>
-                  <div className="recent-chips-list">
-                    {tickets.slice(0, 4).map((t) => (
-                      <button
-                        key={t.id}
-                        className="recent-chip"
-                        onClick={() => {
-                          setQ(t.id);
-                          setFound(t);
-                        }}
-                        type="button"
-                      >
-                        {t.id} ({t.type})
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+              </div>
             </div>
           </div>
 
@@ -255,16 +209,6 @@ export default function Contact() {
                     <button className="btn btn-yellow" onClick={() => setLast(null)} type="button">
                       + {text("மற்றொரு புகார் பதிவு செய்ய", "Log Another")}
                     </button>
-                    <a
-                      className="btn btn-outline-white"
-                      href={`https://wa.me/${PROFILE.whatsapp}?text=${encodeURIComponent(
-                        `வணக்கம், எனது புகார் எண்: ${last.id} (${last.type}). அவசரமாக கவனிக்கக் கோருகிறேன்.`
-                      )}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      WhatsApp நேரடி தகவல்
-                    </a>
                   </div>
                 </div>
               ) : (
@@ -322,18 +266,10 @@ export default function Contact() {
                   </label>
 
                   <div className="form-submit-row">
-                    <button type="submit" className="btn btn-yellow form-submit-btn">
+                    <button type="submit" className="btn btn-yellow form-submit-btn !w-full justify-center">
                       <span>{text("மனு அனுப்புக", "Submit Grievance")}</span>
                       <span aria-hidden="true">→</span>
                     </button>
-                    <a
-                      className="btn btn-outline-white form-wa-btn"
-                      href={wa}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      WhatsApp மூலம் அனுப்ப
-                    </a>
                   </div>
                 </form>
               )}

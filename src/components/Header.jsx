@@ -2,6 +2,18 @@ import { useState, useEffect } from "react";
 import { NAV_ITEMS, PROFILE } from "../data.js";
 import { useScroll, useLocale } from "../hooks.js";
 
+/* Header menu: Videos removed, Journey added after About, Contact shown. */
+const JOURNEY_ITEM = { id: "journey", en: "Journey", ta: "பயணம்" };
+
+const MENU_ITEMS = NAV_ITEMS
+  .filter((item) => item.id !== "videos")
+  .map((item) =>
+    item.id === "petitions"
+      ? { ...item, en: "Contact", ta: "தொடர்பு" } // opens the Contact page
+      : item
+  )
+  .flatMap((item) => (item.id === "about" ? [item, JOURNEY_ITEM] : [item]));
+
 export default function Header({ currentPage = "home", onNavigate }) {
   const [open, setOpen] = useState(false);
   const { solid, progress } = useScroll(60);
@@ -50,7 +62,7 @@ export default function Header({ currentPage = "home", onNavigate }) {
 
       <div className="nav-bar-inner">
         <nav className="nav-pill-box" aria-label="Main Navigation">
-          {/* 1. Brand / Logo (matching Billzzy style) */}
+          {/* 1. Brand / Logo */}
           <a href="#top" className="nav-brand-group" onClick={(event) => goToPage(event, "top")}>
             <img
               src="/images/tvklogo.png"
@@ -62,12 +74,11 @@ export default function Header({ currentPage = "home", onNavigate }) {
             </span>
           </a>
 
-          {/* Thin Vertical Separator Line (like in reference image) */}
           <div className="nav-vert-divider" aria-hidden="true" />
 
-          {/* 2. Desktop Navigation Links (matching Billzzy: active solid pill, inactive clean text) */}
+          {/* 2. Desktop Navigation Links */}
           <div className="nav-links-row">
-            {NAV_ITEMS.map((item) => {
+            {MENU_ITEMS.map((item) => {
               const isCurrent = currentPage === item.id;
               const label = isTamil ? item.ta : item.en;
               return (
@@ -84,10 +95,9 @@ export default function Header({ currentPage = "home", onNavigate }) {
             })}
           </div>
 
-          {/* Thin Vertical Separator Line */}
           <div className="nav-vert-divider" aria-hidden="true" />
 
-          {/* 3. Language Toggle Button (Dakul Button: Tamil / English Translate) */}
+          {/* 3. Language Toggle */}
           <div className="nav-toggle-group">
             <div className="lang-toggle-pill" role="group" aria-label="Language selection">
               <button
@@ -155,7 +165,7 @@ export default function Header({ currentPage = "home", onNavigate }) {
           </div>
 
           <div className="sheet-links-list">
-            {NAV_ITEMS.map((item) => {
+            {MENU_ITEMS.map((item) => {
               const isCurrent = currentPage === item.id;
               const label = isTamil ? item.ta : item.en;
               return (

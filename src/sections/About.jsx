@@ -3,6 +3,10 @@ import { ABOUT, ABOUT_TAMIL, PORTFOLIO_CONTENT, PORTFOLIO_CONTENT_TAMIL, PROFILE
 import { CarouselDots, Tilt, Icon } from "../components/ui.jsx";
 import { useLocale } from "../hooks.js";
 
+/* Main portrait: file lives at tvk_portfolio/public/images/tvkselfhand.png
+   (files in /public are served from the site root, so "public" is not in the URL) */
+const PORTRAIT_PHOTO = "/images/tvkselfhand.png";
+
 /* Second image shown under the portrait.
    Set PROFILE.fieldPhoto in data.js, or drop a file at /public/images/ward-work.jpg */
 const FIELD_PHOTO = PROFILE.fieldPhoto || "/images/tvkgroup/tvkgroup2.jpeg";
@@ -10,6 +14,7 @@ const FIELD_PHOTO = PROFILE.fieldPhoto || "/images/tvkgroup/tvkgroup2.jpeg";
 export default function About() {
   const { isTamil, text } = useLocale();
   const [fieldPhotoFailed, setFieldPhotoFailed] = useState(false);
+  const [portraitFailed, setPortraitFailed] = useState(false);
   const welfareActivitiesRef = useRef(null);
   const commitmentsRef = useRef(null);
 
@@ -77,21 +82,16 @@ export default function About() {
           <div className="about-portrait-wrap about-media-column">
             <Tilt className="portrait-tilt" max={5}>
               <div className="portrait-card-elite">
-                <div className="portrait-flag-stripe" aria-hidden="true">
-                  <span className="p-stripe-red" />
-                  <span className="p-stripe-yellow" />
-                  <span className="p-stripe-red" />
-                </div>
-
                 <div className="portrait-photo-container">
-                  {PROFILE.photo ? (
+                  {!portraitFailed ? (
                     <img
-                      src={PROFILE.photo}
+                      src={PORTRAIT_PHOTO}
                       alt={PROFILE.name}
                       className="portrait-main-photo"
                       width="420"
                       height="525"
                       decoding="async"
+                      onError={() => setPortraitFailed(true)}
                     />
                   ) : (
                     <div className="portrait-ph">
@@ -127,7 +127,7 @@ export default function About() {
               </div>
             </Tilt>
 
-            {/* NEW: second image – on-the-ground work in the ward */}
+            {/* Second image: on-the-ground work in the ward */}
             <figure className="about-field-figure">
               <div className="about-field-frame">
                 {!fieldPhotoFailed ? (

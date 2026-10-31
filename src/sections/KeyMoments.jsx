@@ -6,48 +6,51 @@ const MOMENTS = [
     id: "m1",
     src: "/images/tvkgroup/IMG_2837.JPG",
     flip: "right",
-    alt: "Meeting residents in the ward",
-    tag: { en: "Ground Work", ta: "களப்பணி" },
-    title: { en: "TVK Vinoth", ta: "மக்களோடு மக்களாக" },
+    alt: "R. Vinoth, Minister for Agriculture and Farmers Welfare, meeting residents",
+    tag: { en: "Agriculture", ta: "வேளாண்மை" },
+    title: { en: "R. Vinoth", ta: "ஆர். வினோத்" },
     caption: {
-      en: "TVK Vinoth (R. Vinoth) is an Indian politician from Tamil Nadu and a member of the Tamil Nadu Legislative Assembly representing the Kumbakonam constituency.",
-      ta: "தெருவுக்குத் தெரு மக்களின் குரலைக் கேட்டு, அவர்களின் குறைகளைச் செயலாக மாற்றுகிறோம்.",
+      en: "R. Vinoth of the Tamilaga Vettri Kazhagam (TVK) is the Minister for Agriculture and Farmers Welfare in Tamil Nadu.",
+      ta: "தமிழக வெற்றிக் கழகத்தைச் (தவெக) சேர்ந்த ஆர். வினோத், தமிழ்நாட்டின் வேளாண்மை மற்றும் உழவர் நலத்துறை அமைச்சராக உள்ளார்.",
     },
   },
   {
     id: "m2",
     src: "/images/tvkgroup/tvkgroup2.jpeg",
     flip: "left",
-    alt: "Community welfare activity",
-    tag: { en: "Service", ta: "சேவை" },
-    title: { en: "Minister for School Education", ta: "வீடு தேடி வரும் நலன்" },
+    alt: "Rajmohan Arumugam, Minister for School Education",
+    tag: { en: "School Education", ta: "பள்ளிக் கல்வி" },
+    title: { en: "Rajmohan Arumugam", ta: "ராஜ்மோகன் ஆறுமுகம்" },
     caption: {
-      en: "The Minister for School Education in Tamil Nadu is Rajmohan Arumugam.",
-      ta: "நலத்திட்டங்கள் தாமதமின்றி, இடைத்தரகர் இன்றி குடும்பங்களை நேரடியாகச் சென்றடைகின்றன.",
+      en: "Rajmohan Arumugam is the Minister for School Education in Tamil Nadu.",
+      ta: "ராஜ்மோகன் ஆறுமுகம், தமிழ்நாட்டின் பள்ளிக் கல்வித் துறை அமைச்சராக உள்ளார்.",
     },
   },
   {
     id: "m3",
     src: "/images/tvkgroup/tvkgroup3.jpeg",
     flip: "right",
-    alt: "With the leader and party members",
-    tag: { en: "Leadership", ta: "தலைமை" },
-    title: { en: "Guided by our leader", ta: "தலைவரின் வழிகாட்டலில்" },
+    alt: "Dr. T. K. Prabhu with party members",
+    tag: { en: "Natural Resources", ta: "இயற்கை வளங்கள்" },
+    title: { en: "Dr. T. K. Prabhu", ta: "டாக்டர் டி. கே. பிரபு" },
     caption: {
-      en: "Guided by our leader, grounded in the people we serve every day.",
-      ta: "தலைவரின் வழிகாட்டலில், நாள்தோறும் நாம் சேவை செய்யும் மக்களோடு உறுதியாக நிற்கிறோம்.",
+      en: "Dr. T. K. Prabhu is the Cabinet Minister for Natural Resources (Minerals and Mines) in the Government of Tamil Nadu.",
+      ta: "டாக்டர் டி. கே. பிரபு, தமிழ்நாடு அரசின் இயற்கை வளங்கள் (கனிமங்கள் மற்றும் சுரங்கங்கள்) துறையின் அமைச்சரவை அமைச்சராக உள்ளார்.",
     },
   },
-    {
+  {
     id: "m4",
     src: "/images/tvkgroup/tvkgroup8.png",
     flip: "left",
-    alt: "With the leader and party members",
-    tag: { en: "Leadership", ta: "தலைமை" },
-    title: { en: "Guided by our leader", ta: "தலைவரின் வழிகாட்டலில்" },
+    alt: "Bussy Anand with a party member",
+    tag: { en: "Rural Development", ta: "ஊரக வளர்ச்சி" },
+    title: {
+      en: "N. Anand (Bussy Anand)",
+      ta: "என். ஆனந்த் (புஸ்ஸி ஆனந்த்)",
+    },
     caption: {
-      en: "Guided by our leader, grounded in the people we serve every day.",
-      ta: "தலைவரின் வழிகாட்டலில், நாள்தோறும் நாம் சேவை செய்யும் மக்களோடு உறுதியாக நிற்கிறோம்.",
+      en: "Narayanasamy Anand, popularly known as Bussy Anand, serves as the Cabinet Minister for Rural Development and Water Resources in the Government of Tamil Nadu.",
+      ta: "புஸ்ஸி ஆனந்த் என்று அனைவராலும் அறியப்படும் நாராயணசாமி ஆனந்த், தமிழ்நாடு அரசின் ஊரக வளர்ச்சி மற்றும் நீர்வளத் துறையின் அமைச்சரவை அமைச்சராக உள்ளார்.",
     },
   },
 ];
@@ -78,7 +81,7 @@ const CSS = `
 .km-in .km-flip{opacity:1;transform:translateX(0) rotateY(0)}
 
 .km-card{--rx:0deg;--ry:0deg;--gx:50%;--gy:50%;position:relative;margin:0;transform-style:preserve-3d;transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .18s ease-out;touch-action:pan-y;border-radius:14px;background:#fff;border:1.5px solid rgba(160,0,0,.12);box-shadow:0 18px 44px rgba(90,6,11,.18);overflow:hidden}
-.km-img-wrap{position:relative;aspect-ratio:4/3;background:linear-gradient(145deg,#7A0A10,#360408);border-top:5px solid transparent;border-image:linear-gradient(90deg,#9e1515 50%,#FFC20E 50%) 1}
+.km-img-wrap{position:relative;aspect-ratio:4/3;background:linear-gradient(145deg,#7A0A10,#360408)}
 .km-img-wrap img{display:block;width:100%;height:100%;object-fit:cover;object-position:center top;user-select:none;-webkit-user-drag:none}
 .km-glare{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--gx) var(--gy),rgba(255,255,255,.28),transparent 55%);opacity:0;transition:opacity .2s}
 .km-card:hover .km-glare{opacity:1}

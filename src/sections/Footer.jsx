@@ -29,7 +29,7 @@ const css = `
 }
 .ft-right { display:flex; flex-direction:column; }
 .ft-title {
-  font-family: 'Cormorant Garamond','Playfair Display',Georgia,serif;
+  font-family: var(--font-heading);
   font-weight: 500; color:${RED}; line-height:1.1;
   font-size: clamp(2rem, 4vw, 3.1rem); margin: 0 0 18px;
 }
@@ -100,7 +100,7 @@ const css = `
 /* ---------- Watermark ---------- */
 .ft-watermark {
   max-width:1365px; margin:0 auto; text-align:center; user-select:none;
-  font-family: 'Cormorant Garamond','Playfair Display',Georgia,serif;
+  font-family: var(--font-heading);
   font-size: clamp(5rem, 19vw, 17rem); line-height:.9; white-space:nowrap;
   color: rgba(160,0,0,.07); pointer-events:none;
   height: clamp(110px, 17vw, 250px); overflow:hidden; padding-top:6px;
@@ -126,7 +126,7 @@ export default function Footer() {
 
   const homeLinks = NAV_ITEMS.filter((i) => ["home", "about"].includes(i.id));
   const mediaLinks = NAV_ITEMS.filter((i) =>
-    ["videos", "articles", "testimonials"].includes(i.id)
+    ["videos", "articles"].includes(i.id)
   );
 
   const homeLabel = (item) =>
@@ -134,7 +134,7 @@ export default function Footer() {
       ? item.ta
       : item.en === "Home"
       ? `About ${PROFILE.constituency}`
-      : "About MLA";
+      : item.en;
 
   return (
     <footer className="ft-wrap" id="footer">
@@ -161,9 +161,6 @@ export default function Footer() {
             <a href="#contact" className="ft-btn ft-btn-primary">
               {text("மனு சமர்ப்பிக்க", "Submit Petition")}
               <span className="ft-arrow" aria-hidden="true">↗</span>
-            </a>
-            <a href="#contact" className="ft-btn ft-btn-secondary">
-              {text("மனுவைக் கண்காணிக்க", "Track Petition")}
             </a>
           </div>
 

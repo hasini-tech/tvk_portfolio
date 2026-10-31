@@ -5,9 +5,10 @@ const BASE = "/images/tvkgroup";
 const FALLBACK_IMAGE = `${BASE}/tvkgroup.jpeg`;
 const CARD_W = 252;
 const GAP = 14;
-const LOOP_SECONDS = 40; // lower = faster
+const COLUMN_H = 390;    // every column is exactly this tall
+const LOOP_SECONDS = 60; // lower = faster
+const COPIES = 4;        // must be an even number (animation moves exactly half)
 
-// Images used by the gallery, in display order (7 tiles in the layout)
 const IMAGES = [
   { src: `${BASE}/tvkgroup1.jpeg`, title: "Gallery photo 1", titleTamil: "புகைப்படம் 1" },
   { src: `${BASE}/tvkgroup2.jpeg`, title: "Gallery photo 2", titleTamil: "புகைப்படம் 2" },
@@ -18,21 +19,16 @@ const IMAGES = [
   { src: `${BASE}/tvkgroup7.jpeg`, title: "Gallery photo 7", titleTamil: "புகைப்படம் 7" },
 ];
 
-// Each column lists image heights (px). Images are taken from IMAGES in order.
-const COLUMNS = [
-  [270],
-  [215, 160],
-  [377],
-  [143, 233],
-  [268],
-];
+// Each number is a tile's share of its column's height.
+// One tile = fills the whole column. Two tiles = split by ratio.
+const COLUMNS = [[1], [215, 160], [1], [143, 233], [1]];
 
 const BG = "#f5efeb";
 
 const keyframes = `
 @keyframes galleryLoop {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
 }
 @media (prefers-reduced-motion: reduce) {
   .gallery-loop-track { animation: none !important; }
@@ -91,19 +87,22 @@ const styles = {
   },
 };
 
-function Tile({ item, height, isTamil }) {
+function Tile({ item, grow, isTamil }) {
   const [hover, setHover] = useState(false);
   const alt = isTamil ? item.titleTamil || item.title : item.title;
 
   return (
     <div
-      className="photo-frame photo-frame-gallery"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        height,
+        flex: `${grow} 1 0`,
+        minHeight: 0,
         overflow: "hidden",
-        background: "#FAF7F2",
+        borderRadius: 6,
+        border: "none",
+        outline: "none",
+        background: "transparent",
         boxShadow: hover
           ? "0 16px 34px rgba(0,0,0,0.25)"
           : "0 8px 20px rgba(0,0,0,0.14)",
@@ -129,28 +128,28 @@ function Tile({ item, height, isTamil }) {
   );
 }
 
-// One full set of columns. Rendered twice so the loop is seamless.
+// One full set of columns. Every set is identical so the loop is seamless.
 function ColumnSet({ isTamil, hidden }) {
   let cursor = 0;
-  return COLUMNS.map((heights, colIndex) => (
+  return COLUMNS.map((grows, colIndex) => (
     <div
       key={colIndex}
       aria-hidden={hidden || undefined}
       style={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
         gap: GAP,
+        height: COLUMN_H,
         flex: `0 0 ${CARD_W}px`,
         width: CARD_W,
         marginRight: GAP,
       }}
     >
-      {heights.map((h) => {
+      {grows.map((g) => {
         const item = IMAGES[cursor % IMAGES.length];
         const key = `${colIndex}-${cursor}`;
         cursor += 1;
-        return <Tile key={key} item={item} height={h} isTamil={isTamil} />;
+        return <Tile key={key} item={item} grow={g} isTamil={isTamil} />;
       })}
     </div>
   ));
@@ -193,15 +192,16 @@ export default function Gallery() {
             className="gallery-loop-track"
             style={{
               display: "flex",
-              alignItems: "center",
+              alignItems: "flex-start",
               width: "max-content",
               animation: `galleryLoop ${LOOP_SECONDS}s linear infinite`,
               animationPlayState: paused ? "paused" : "running",
               willChange: "transform",
             }}
           >
-            <ColumnSet isTamil={isTamil} />
-            <ColumnSet isTamil={isTamil} hidden />
+            {Array.from({ length: COPIES }).map((_, i) => (
+              <ColumnSet key={i} isTamil={isTamil} hidden={i > 0} />
+            ))}
           </div>
         </div>
       </div>

@@ -110,16 +110,42 @@ export default function Videos() {
       id="videos"
       style={{
         background: "#fff",
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        padding: "110px 0 70px",
+        padding: "70px 0 50px", /* home-page section: no full-screen height */
       }}
     >
       {/* only used to hide the scrollbar (cannot be done inline) */}
       <style>{`.vc-hide::-webkit-scrollbar{display:none}`}</style>
 
       <div style={{ width: "100%", maxWidth: 1280, margin: "0 auto", padding: "0 20px" }}>
+        {/* ===== Section header ===== */}
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 700,
+              color: "#9e1515",
+            }}
+          >
+            {text("காணொளிகள்", "Videos")}
+          </h2>
+          <div
+            style={{
+              width: 70,
+              height: 4,
+              borderRadius: 2,
+              background: "#f5b400",
+              margin: "12px auto 0",
+            }}
+          />
+          <p style={{ margin: "12px 0 0", color: "#555", fontSize: 16 }}>
+            {text(
+              "எங்கள் களப்பணிகள் மற்றும் நிகழ்வுகளின் காட்சிகள்",
+              "Glimpses of our field work, events and activities"
+            )}
+          </p>
+        </div>
+
         <div
           role="region"
           aria-roledescription="carousel"

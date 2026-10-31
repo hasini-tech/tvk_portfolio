@@ -432,7 +432,6 @@ export const NAV_ITEMS = [
   { id: "articles", en: "Articles", ta: "கட்டுரைகள்" },
   { id: "videos", en: "Videos", ta: "காணொளிகள்" },
   { id: "petitions", en: "My Petitions", ta: "என் மனுக்கள்" },
-  { id: "testimonials", en: "Testimonials", ta: "பாராட்டுகள்" },
 ];
 
 export const NAV = NAV_ITEMS.map((item) => [item.id, `${item.ta} / ${item.en}`]);

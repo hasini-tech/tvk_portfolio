@@ -1,10 +1,63 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700;800;900&family=Teko:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
+/* =========================================================================
+   TVK TYPOGRAPHY SYSTEM (Inspired by tvkvijay.com)
+   - Neythal: Main display headings, hero titles, buttons, prominent text
+   - Teko: Section headings, large titles, subheadings, metrics/numbers
+   - InsSans: Body text, descriptions, labels, content
+   - UI Sans Serif: Navigation links, headers, UI controls
+   - Apple System: Small text, supporting labels, utility content
+   - Noto Sans Tamil: Multilingual Tamil script fallback
+   ========================================================================= */
+
+@font-face {
+  font-family: 'Neythal';
+  src: url('/fonts/Neythal.woff2') format('woff2'),
+       url('/fonts/Neythal.woff') format('woff');
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'InsSans';
+  src: url('/fonts/InsSans.woff2') format('woff2'),
+       url('/fonts/InsSans.woff') format('woff');
+  font-weight: 300 800;
+  font-display: swap;
+}
+
+:root {
+  /* 5 Core Font Families */
+  --font-neythal: 'Neythal', 'Noto Sans Tamil', system-ui, sans-serif;
+  --font-teko: 'Teko', 'Noto Sans Tamil', sans-serif;
+  --font-inssans: 'InsSans', 'Noto Sans Tamil', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-uisans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Tamil', sans-serif;
+  --font-applesystem: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Noto Sans Tamil', sans-serif;
+
+  /* Aliases for global consistency */
+  --font-heading: var(--font-teko);
+  --font-display: var(--font-neythal);
+  --font-body: var(--font-inssans);
+  --font-sans: var(--font-inssans);
+  --font-brand: var(--font-neythal);
+  --font-tamil: 'Noto Sans Tamil', var(--font-inssans);
+}
+
 @theme {
-  --font-sans: "Cormorant Garamond", "Playfair Display", Georgia, serif;
-  --font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
-  --font-heading: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-neythal: "Neythal", "Noto Sans Tamil", system-ui, sans-serif;
+  --font-teko: "Teko", "Noto Sans Tamil", sans-serif;
+  --font-inssans: "InsSans", "Noto Sans Tamil", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-uisans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Tamil", sans-serif;
+  --font-applesystem: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Noto Sans Tamil", sans-serif;
+
+  --font-sans: "InsSans", "Noto Sans Tamil", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "InsSans", "Noto Sans Tamil", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Teko", "Noto Sans Tamil", sans-serif;
+  --font-display: "Neythal", "Noto Sans Tamil", system-ui, sans-serif;
+  --font-brand: "Neythal", "Noto Sans Tamil", system-ui, sans-serif;
+  --font-serif: "Teko", "Noto Sans Tamil", sans-serif;
+  --font-tamil: "Noto Sans Tamil", "InsSans", sans-serif;
   --color-tvk-red: #9e1515;
   --color-tvk-red-hover: #B80000;
   --color-tvk-red-deep: #5A060B;
@@ -85,7 +138,7 @@
   width: min(92vw, 900px);
   margin: clamp(12px, 3vh, 30px) 0 0;
   color: #ffffff;
-  font-family: "Hind Madurai", "Outfit", sans-serif;
+  font-family: var(--font-body);
   font-size: clamp(1.25rem, 3.2vw, 2.5rem);
   font-weight: 700;
   line-height: 1.3;
@@ -162,11 +215,330 @@ body {
   overflow-x: hidden;
 }
 
-/* Use the requested serif typeface consistently across every project element. */
+/* =========================================================================
+   GLOBAL TYPOGRAPHY RULES & TYPOGRAPHY SYSTEM CLASSES (tvkvijay.com)
+   ========================================================================= */
+
+/* Base Setup */
 html,
 body,
-body * {
-  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif !important;
+.cp {
+  font-family: var(--font-inssans);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* 17 Mandatory Typography Classes from tvkvijay.com */
+.type-large-title {
+  font-family: var(--font-neythal);
+  font-size: clamp(2.5rem, 5.5vw, 4.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+.type-h2 {
+  font-family: var(--font-teko);
+  font-size: clamp(2.1rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.type-h3 {
+  font-family: var(--font-teko);
+  font-size: clamp(1.6rem, 3.2vw, 2.3rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.type-h3-24 {
+  font-family: var(--font-teko);
+  font-size: 1.5rem; /* 24px */
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+
+.type-h5 {
+  font-family: var(--font-teko);
+  font-size: 1.25rem; /* 20px */
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+.type-subheading {
+  font-family: var(--font-inssans);
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.type-subheading-15 {
+  font-family: var(--font-inssans);
+  font-size: 0.9375rem; /* 15px */
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.type-subheading-14 {
+  font-family: var(--font-inssans);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.type-subheading-14-700 {
+  font-family: var(--font-inssans);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.type-body {
+  font-family: var(--font-inssans);
+  font-size: 1rem; /* 16px */
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.type-body-18 {
+  font-family: var(--font-inssans);
+  font-size: 1.125rem; /* 18px */
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.type-body-18-400 {
+  font-family: var(--font-inssans);
+  font-size: 1.125rem; /* 18px */
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.type-body-16 {
+  font-family: var(--font-inssans);
+  font-size: 1rem; /* 16px */
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.type-small-body {
+  font-family: var(--font-applesystem);
+  font-size: 0.8125rem; /* 13px */
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.type-button {
+  font-family: var(--font-neythal);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.type-header {
+  font-family: var(--font-uisans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.type-link {
+  font-family: var(--font-uisans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+/* Website Element Mappings */
+
+/* Hero Titles & Main Prominent Headings -> Neythal */
+.hero-name-title,
+.welcome-splash-wordmark strong,
+.welcome-splash-wordmark b {
+  font-family: var(--font-neythal);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+
+/* Headings & Section Titles -> Teko */
+h1, h2,
+.section-title,
+.section-title-large,
+.section-title-banner,
+.about-main-heading,
+.font-display {
+  font-family: var(--font-teko);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+h3,
+.pillar-display-title,
+.work-card-title,
+.milestone-title,
+.journey-milestone-content h3,
+.membership-title,
+.card-party-name,
+.ann-title,
+.evt-title,
+.vc-title,
+.ft-title,
+.ft-watermark {
+  font-family: var(--font-teko);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h4, h5, h6,
+.office-card-title,
+.form-title,
+.done-heading,
+.footer-party-title,
+.modal-heading,
+.modal-org-title {
+  font-family: var(--font-teko);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* Stats, Numbers & Counters -> Teko */
+.fact-num,
+.pillar-num,
+.stat-num,
+.highlight-val,
+.tl-year-pill,
+.ticket-number-val,
+.progress-dial-val,
+.ann-day,
+.evt-day,
+.vc-index,
+.leaders-deck-counter,
+.stat-rank-tag,
+.welfare-activity-number,
+.bar-card-percent-badge b,
+.portrait-badge-metric b,
+.prominent-text {
+  font-family: var(--font-teko);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Buttons -> Neythal */
+button,
+.btn,
+a.btn,
+.btn-yellow,
+.btn-red,
+.btn-copy,
+.ft-btn,
+.ft-actions a,
+[type="button"],
+[type="submit"] {
+  font-family: var(--font-neythal);
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+/* Navigation & Branding -> Neythal & UI Sans */
+.nav-brand,
+.nav-brand-wordmark,
+.brand-title,
+.brand-name {
+  font-family: var(--font-neythal);
+  font-weight: 800;
+}
+
+.nav-link,
+.nav-links a,
+.nav-tab-link,
+.nav-cta,
+.ft-nav ul li a,
+.lang-toggle-pill {
+  font-family: var(--font-uisans);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Body Content, Descriptions & Form Controls -> InsSans */
+p, li, dd, dt, article, blockquote p,
+.font-sans,
+.section-sub-text,
+.desc,
+.lead,
+.card-desc,
+.hero-lead,
+.hero-sub,
+.hero-tagline-text,
+.hero-role-tag,
+.about-bio,
+.portfolio-content-card p,
+.done-lead,
+.contact-info-list,
+.contact-info-row span,
+.office-card-sub,
+.pillar-tab-title,
+.summary-card-kicker {
+  font-family: var(--font-inssans);
+  line-height: 1.6;
+}
+
+label,
+.form-label,
+.form-label span,
+.portfolio-content-label {
+  font-family: var(--font-inssans);
+  font-weight: 600;
+}
+
+input,
+textarea,
+select,
+.tracker-input {
+  font-family: var(--font-inssans);
+  font-weight: 400;
+}
+
+/* Supporting Labels, Badges & Small Text -> Apple System */
+.form-char-count,
+.form-privacy-badge,
+.ticket-box-note,
+.badge,
+.tvk-flag-pill,
+.chip,
+.tracker-sub,
+.result-meta,
+.res-tl-item,
+.ft-bar,
+.fact-txt,
+.contact-info-row b,
+.about-field-caption-meta {
+  font-family: var(--font-applesystem);
+  font-size: 0.8125rem;
+}
+
+/* Tamil Typography Optimizations */
+:lang(ta),
+[lang="ta"],
+[lang^="ta"],
+.language-ta {
+  line-height: 1.65;
+}
+
+:lang(ta) h1, :lang(ta) h2, :lang(ta) h3, :lang(ta) .section-title,
+.language-ta h1, .language-ta h2, .language-ta h3, .language-ta .section-title {
+  line-height: 1.35;
+  letter-spacing: 0;
 }
 
 /* TVK Design Tokens */
@@ -189,7 +561,7 @@ body * {
   --tvk-glass: rgba(255, 255, 255, 0.12);
   --tvk-glass-card: rgba(36, 2, 5, 0.85);
 
-  font-family: 'Hind Madurai', 'Outfit', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
   color: var(--tvk-ink);
   background: var(--tvk-paper);
   line-height: 1.6;
@@ -280,21 +652,21 @@ body * {
 }
 
 .welcome-splash-wordmark span {
-  font-family: 'Hind Madurai', sans-serif;
+  font-family: var(--font-body);
   font-size: clamp(1.15rem, 2.4vw, 1.8rem);
   font-weight: 700;
 }
 
 .welcome-splash-wordmark strong {
   color: var(--tvk-yellow);
-  font-family: 'Hind Madurai', sans-serif;
+  font-family: var(--font-body);
   font-size: clamp(3.1rem, 7vw, 5.3rem);
   font-weight: 700;
 }
 
 .welcome-splash-wordmark b {
   color: var(--tvk-yellow);
-  font-family: 'Hind Madurai', sans-serif;
+  font-family: var(--font-body);
   font-size: clamp(1.65rem, 3.5vw, 2.7rem);
   font-weight: 700;
   margin-top: 4px;
@@ -306,7 +678,7 @@ body * {
   gap: 5px;
   margin-top: clamp(28px, 5vh, 48px);
   color: #FFFFFF;
-  font-family: 'Hind Madurai', sans-serif;
+  font-family: var(--font-body);
   font-size: clamp(1.25rem, 3.1vw, 2.35rem);
   font-weight: 700;
   line-height: 1.25;
@@ -486,7 +858,7 @@ body * {
 }
 
 .section-title-large {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.2rem, 4.4vw, 3.5rem);
   font-weight: 400;
   letter-spacing: 0.01em;
@@ -663,7 +1035,7 @@ body * {
 }
 
 .nav-brand-wordmark {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.15rem;
   color: var(--tvk-red);
   letter-spacing: 0.02em;
@@ -692,7 +1064,7 @@ body * {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Outfit', 'Hind Madurai', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.88rem;
   font-weight: 500;
   color: #4B5563;
@@ -734,7 +1106,7 @@ body * {
   cursor: pointer;
   transition: all 0.2s ease;
   gap: 1px;
-  font-family: 'Outfit', 'Hind Madurai', sans-serif;
+  font-family: var(--font-body);
 }
 
 .lang-toggle-pill:hover {
@@ -1206,7 +1578,7 @@ body * {
 }
 
 .hero-role-tag {
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 1.05rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
@@ -1222,7 +1594,7 @@ body * {
 }
 
 .hero-name-title {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: clamp(3.2rem, 7vw, 5.8rem);
   font-weight: 400;
   line-height: 0.95;
@@ -1283,7 +1655,7 @@ body * {
 }
 
 .fact-num {
-  font-family: 'Teko', 'Anton', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   line-height: 0.9;
   color: var(--tvk-yellow);
@@ -1476,7 +1848,7 @@ body * {
 
 .pillar-tab-card {
   background: #FFFFFF;
-  border: 1.5px solid var(--tvk-border-subtle);
+  border: none;
   border-radius: 20px;
   padding: 24px 20px;
   text-align: left;
@@ -1487,26 +1859,18 @@ body * {
 
 .pillar-tab-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(160, 0, 0, 0.3);
   box-shadow: 0 10px 24px rgba(90, 6, 11, 0.08);
 }
 
 .pillar-tab-active {
   background: linear-gradient(145deg, #FFFFFF 0%, #FFF9F0 100%);
-  border-color: var(--tvk-red);
+  border: none;
   box-shadow: 0 12px 30px rgba(160, 0, 0, 0.12);
   position: relative;
 }
 
 .pillar-tab-active::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 20px;
-  right: 20px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--tvk-red), var(--tvk-yellow));
-  border-radius: 0 0 4px 4px;
+  display: none;
 }
 
 .pillar-tab-header {
@@ -1533,7 +1897,7 @@ body * {
 }
 
 .pillar-num {
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.8rem;
   line-height: 1;
   color: rgba(160, 0, 0, 0.35);
@@ -1545,7 +1909,7 @@ body * {
 }
 
 .pillar-tab-title {
-  font-family: 'Hind Madurai', sans-serif;
+  font-family: var(--font-body);
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--tvk-red);
@@ -1592,7 +1956,7 @@ body * {
 }
 
 .pillar-current-index {
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-weight: 800;
   font-size: 0.76rem;
   letter-spacing: 0.08em;
@@ -1609,7 +1973,7 @@ body * {
 }
 
 .pillar-display-title {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.6rem, 4.2vw, 3.8rem);
   font-weight: 400;
   color: var(--tvk-red);
@@ -1686,7 +2050,7 @@ body * {
 }
 
 .leaders-deck-counter {
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.3rem;
   color: var(--tvk-ink-muted);
 }
@@ -1779,7 +2143,7 @@ body * {
 }
 
 .model-card-fallback-mark {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-heading);
   font-size: 3rem;
   color: var(--tvk-yellow);
 }
@@ -1861,13 +2225,11 @@ body * {
   border-radius: 30px;
   overflow: hidden;
   box-shadow: 0 24px 60px rgba(90, 6, 11, 0.18);
-  border: 2px solid rgba(160, 0, 0, 0.1);
+  border: none;
 }
 
 .portrait-flag-stripe {
-  display: flex;
-  height: 5px;
-  width: 100%;
+  display: none;
 }
 
 .p-stripe-red {
@@ -1910,7 +2272,7 @@ body * {
 }
 
 .portrait-ph-monogram {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-heading);
   font-size: 6rem;
   color: var(--tvk-yellow);
 }
@@ -1924,7 +2286,7 @@ body * {
 }
 
 .ward-badge-pill {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.5rem;
   color: var(--tvk-yellow);
   line-height: 1;
@@ -1975,7 +2337,7 @@ body * {
 }
 
 .portrait-badge-metric b {
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2rem;
   line-height: 1;
   color: var(--tvk-red);
@@ -2006,7 +2368,7 @@ body * {
 }
 
 .about-main-heading {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.2rem, 3.8vw, 3.2rem);
   font-weight: 400;
   color: var(--tvk-red-night);
@@ -2068,7 +2430,7 @@ body * {
   padding: 18px 20px;
   border-radius: 16px;
   background: linear-gradient(135deg, #FFFDF9, #FFFFFF);
-  border: 1.5px solid var(--tvk-border-subtle);
+  border: none;
   box-shadow: 0 6px 18px rgba(90, 6, 11, 0.05);
 }
 
@@ -2128,7 +2490,7 @@ body * {
 .welfare-activity-number {
   flex-shrink: 0;
   color: var(--tvk-red);
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.45rem;
   line-height: 1;
 }
@@ -2292,14 +2654,14 @@ body * {
 }
 
 .stat-rank-tag {
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.8rem;
   color: rgba(255, 255, 255, 0.4);
   font-weight: 700;
 }
 
 .stat-num {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.8rem, 4.8vw, 3.8rem);
   line-height: 1;
   color: var(--tvk-yellow);
@@ -2373,7 +2735,7 @@ body * {
 }
 
 .highlight-val {
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   color: var(--tvk-yellow);
   line-height: 1;
@@ -2534,7 +2896,7 @@ body * {
 }
 
 .work-card-title {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.45rem;
   font-weight: 400;
   letter-spacing: 0.01em;
@@ -2735,7 +3097,7 @@ body * {
 }
 
 .tl-year-pill {
-  font-family: 'Teko', 'Anton', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2rem;
   line-height: 1;
   color: var(--tvk-red);
@@ -2795,7 +3157,7 @@ body * {
 }
 
 .milestone-title {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.4rem;
   color: var(--tvk-red);
 }
@@ -2953,7 +3315,7 @@ body * {
   border-radius: 999px;
   background: rgba(36, 2, 5, 0.84);
   color: var(--tvk-yellow);
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.5rem;
   line-height: 1;
 }
@@ -2976,7 +3338,7 @@ body * {
 .journey-milestone-content h3 {
   margin-top: 14px;
   color: var(--tvk-red);
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: clamp(2rem, 3.2vw, 3rem);
   font-weight: 400;
   line-height: 1.12;
@@ -3134,7 +3496,7 @@ body * {
 }
 
 .ann-day {
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2.8rem;
   line-height: 0.9;
   font-weight: 700;
@@ -3254,7 +3616,7 @@ body * {
 }
 
 .evt-day {
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   line-height: 0.9;
   font-weight: 700;
@@ -3540,7 +3902,7 @@ body * {
 }
 
 .ring-ph-mark {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-heading);
   font-size: 3rem;
   color: var(--tvk-yellow);
 }
@@ -3627,7 +3989,7 @@ body * {
 }
 
 .grid-ph-mark {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2.5rem;
   color: var(--tvk-yellow);
 }
@@ -3714,7 +4076,7 @@ body * {
 }
 
 .lightbox-ph-mark {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-heading);
   font-size: 3.5rem;
   color: var(--tvk-yellow);
 }
@@ -3783,7 +4145,7 @@ body * {
 }
 
 .summary-card-kicker {
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -3810,7 +4172,7 @@ body * {
 }
 
 .progress-dial-val {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: 3.5rem;
   line-height: 0.95;
   color: var(--tvk-red);
@@ -3944,7 +4306,7 @@ body * {
 }
 
 .bar-card-percent-badge b {
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.9rem;
   line-height: 1;
   color: var(--tvk-red);
@@ -4023,7 +4385,7 @@ body * {
   padding: 60px 48px;
   overflow: hidden;
   box-shadow: 0 24px 60px rgba(90, 6, 11, 0.25);
-  border: 2px solid rgba(255, 194, 14, 0.35);
+  border: none;
 }
 
 .membership-bg-glow {
@@ -4037,12 +4399,7 @@ body * {
 }
 
 .membership-flag-strip {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  height: 5px;
+  display: none;
 }
 
 .strip-red { flex: 1; background: #9e1515; }
@@ -4074,7 +4431,7 @@ body * {
 }
 
 .membership-title {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.2rem, 4.4vw, 3.4rem);
   font-weight: 400;
   line-height: 1.1;
@@ -4171,7 +4528,7 @@ body * {
 }
 
 .card-party-name {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.4rem;
   color: var(--tvk-red);
   line-height: 1.1;
@@ -4232,7 +4589,7 @@ body * {
 }
 
 .office-card-title {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.5rem;
   color: var(--tvk-yellow);
 }
@@ -4350,7 +4707,7 @@ body * {
 }
 
 .result-id {
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.6rem;
   color: var(--tvk-yellow);
 }
@@ -4484,7 +4841,7 @@ body * {
 }
 
 .form-title {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.6rem;
   color: var(--tvk-red);
 }
@@ -4568,7 +4925,7 @@ body * {
 }
 
 .done-heading {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2rem;
   color: var(--tvk-red);
 }
@@ -4607,7 +4964,7 @@ body * {
 }
 
 .ticket-number-val {
-  font-family: 'Anton', 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2.4rem;
   color: var(--tvk-red);
   letter-spacing: 0.05em;
@@ -4730,7 +5087,7 @@ body * {
 }
 
 .footer-party-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.35rem;
   color: var(--tvk-yellow);
   line-height: 1.15;
@@ -4761,7 +5118,7 @@ body * {
 }
 
 .footer-col-heading {
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 1.05rem;
   color: var(--tvk-yellow);
@@ -4812,7 +5169,7 @@ body * {
 
 .footer-helpline-link {
   display: inline-block;
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.6rem;
   color: #FFFFFF;
   line-height: 1.1;
@@ -4960,7 +5317,7 @@ body * {
 }
 
 .modal-heading {
-  font-family: 'Anton', 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.45rem;
   color: var(--tvk-red-night);
   line-height: 1.25;
@@ -5004,7 +5361,7 @@ body * {
 }
 
 .modal-org-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.35rem;
   color: var(--tvk-red);
   line-height: 1.1;
@@ -5397,7 +5754,7 @@ body * {
   max-width: 920px;
   margin: 0;
   color: #FFFFFF;
-  font-family: 'Hind Madurai', sans-serif;
+  font-family: var(--font-body);
   font-size: clamp(1.1rem, 2.2vw + 0.35rem, 2rem);
   font-weight: 700;
   line-height: 1.3;
@@ -5436,7 +5793,7 @@ body * {
   left: 0;
   right: 0;
   color: rgba(255, 255, 255, 0.55);
-  font-family: 'Outfit', system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 0.8rem;
   letter-spacing: 0.04em;
 }
@@ -5799,11 +6156,11 @@ body * {
 
 .portrait-card-elite {
   border-radius: 22px;
-  border: 1px solid rgba(160, 0, 0, 0.12);
+  border: none;
   box-shadow: 0 18px 44px rgba(90, 6, 11, 0.14);
 }
 
-.portrait-flag-stripe { height: 6px; }
+.portrait-flag-stripe { display: none; }
 .portrait-photo-overlay { background: linear-gradient(180deg, transparent 55%, rgba(30, 2, 4, 0.8) 100%); }
 .portrait-card-footer { border-top: 1px solid var(--tvk-border-subtle); }
 
@@ -5819,18 +6176,13 @@ body * {
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border-radius: 22px;
-  border: 1px solid rgba(160, 0, 0, 0.12);
+  border: none;
   background: linear-gradient(145deg, #7A0A10, #360408);
   box-shadow: 0 14px 34px rgba(90, 6, 11, 0.12);
 }
 
 .about-field-frame::after {
-  /* gold keyline along the bottom edge ties it to the portrait card */
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--tvk-red) 0 50%, var(--tvk-yellow) 50% 100%);
+  display: none;
 }
 
 .about-field-photo {
@@ -5911,11 +6263,11 @@ body * {
 
 .portfolio-content-card {
   padding: 20px 22px;
-  border: 1px solid var(--tvk-border-subtle);
-  border-top: 3px solid var(--tvk-red);
+  border: none;
+  border-top: none;
   border-radius: 14px;
   background: #FFFFFF;
-  box-shadow: none;
+  box-shadow: 0 4px 14px rgba(90, 6, 11, 0.04);
 }
 
 .portfolio-content-label {
@@ -5931,7 +6283,7 @@ body * {
 
 .portfolio-content-card-wide {
   border: 0;
-  border-top: 3px solid var(--tvk-yellow);
+  border-top: none;
   background: linear-gradient(135deg, var(--tvk-red-deep), var(--tvk-red-night));
 }
 
@@ -6117,7 +6469,7 @@ body * {
 
 .vc-index {
   align-self: flex-end;
-  font-family: 'Teko', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.6rem;
   line-height: 1;
   color: rgba(160, 0, 0, 0.3);
@@ -6715,11 +7067,7 @@ body * {
     font-size: clamp(1.8rem, 9vw, 2.6rem);
   }
 
-  /* News, events and testimonials */
-  .news-tabs-pill {
-    width: 100%;
-    justify-content: stretch;
-  }
+
 
   .news-tab-btn {
     flex: 1;
@@ -7021,19 +7369,14 @@ body * {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border: 5px solid #FAF7F2;
-  outline: 1.5px solid #9e1515;
+  border: none;
+  outline: none;
   background: #FAF7F2;
   box-shadow: 0 12px 28px rgba(90, 6, 11, 0.22);
 }
 
 .photo-frame::after {
-  content: "";
-  position: absolute;
-  inset: 5px;
-  z-index: 2;
-  border: 1px solid rgba(255, 194, 14, 0.82);
-  pointer-events: none;
+  display: none;
 }
 
 .photo-frame img {
@@ -7048,8 +7391,8 @@ body * {
 }
 
 .model-card-active.photo-frame {
-  border-color: #FFC20E;
-  outline-color: #9e1515;
+  border: none;
+  outline: none;
 }
 
 .photo-frame-gallery {
@@ -7120,21 +7463,7 @@ body * {
   overflow: hidden;
 }
 
-.km-img-wrap {
-  position: relative;
-  aspect-ratio: 16 / 10;
-  background: linear-gradient(145deg, #7A0A10, #360408);
-  border-top: 5px solid transparent;
-  border-image: linear-gradient(90deg, #9e1515 50%, #FFC20E 50%) 1;
-}
-.km-img-wrap img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  user-select: none;
-  -webkit-user-drag: none;
-}
+
 
 /* light that follows the cursor */
 .km-glare {

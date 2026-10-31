@@ -30,6 +30,8 @@ const LEADER_CAROUSEL_CSS = `
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  /* vertical page scroll still works; horizontal swipes go to the carousel */
+  touch-action: pan-y;
 }
 
 .lc-card {
@@ -56,6 +58,7 @@ const LEADER_CAROUSEL_CSS = `
   transition: transform 0.55s cubic-bezier(0.22, 0.8, 0.25, 1),
               filter 0.55s ease, opacity 0.55s ease, box-shadow 0.55s ease;
   will-change: transform;
+  -webkit-tap-highlight-color: transparent;
 }
 .lc-card-active {
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
@@ -64,6 +67,8 @@ const LEADER_CAROUSEL_CSS = `
 .lc-card[style*="--abs: 3"],
 .lc-card[style*="--abs:3"] { opacity: 0; pointer-events: none; }
 
+/* No ring on tap/click, still visible for keyboard users */
+.lc-card:focus { outline: none; }
 .lc-card:focus-visible { outline: 3px solid #ffd54a; outline-offset: 3px; }
 
 .lc-photo {
@@ -72,6 +77,7 @@ const LEADER_CAROUSEL_CSS = `
   object-fit: cover;
   display: block;
   user-select: none;
+  -webkit-user-drag: none;
 }
 
 .lc-fallback {
@@ -86,7 +92,8 @@ const LEADER_CAROUSEL_CSS = `
   letter-spacing: 0.1em;
 }
 
-.lc-badge {
+/* Higher specificity so global span styles can't turn the badge blue */
+.lc-card .lc-badge {
   position: absolute;
   top: 12px;
   left: 12px;
@@ -98,6 +105,7 @@ const LEADER_CAROUSEL_CSS = `
   color: #fff;
   background: rgba(60, 60, 60, 0.7);
   backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -110,10 +118,11 @@ const LEADER_CAROUSEL_CSS = `
   color: #fff;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.35));
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 .lc-name {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: clamp(0.9rem, 4vw, 1.05rem);
   font-weight: 700;
   line-height: 1.3;
 }
@@ -134,6 +143,7 @@ const LEADER_CAROUSEL_CSS = `
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   transition: transform 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 .lc-arrow:hover { transform: translateY(-50%) scale(1.1); }
 .lc-arrow:focus-visible { outline: 3px solid #ffd54a; outline-offset: 2px; }
@@ -187,18 +197,18 @@ const modelImages = [
     labelTamil: "கடமை, கண்ணியம், கட்டுப்பாடு",
   },
   {
-    src: "/images/tvkvijay.png",
-    name: "வெற்றித் தலைவர் விஜய்",
-    title: "TVK Leader Vijay",
-    label: "People-First Politics",
-    labelTamil: "மக்கள் முன்னுரிமை அரசியல்",
+    src: "/images/tvkcmoff.png",
+    name: "தலைவர் விஜய்",
+    title: "TVK President Vijay",
+    label: "Party President",
+    labelTamil: "கட்சித் தலைவர்",
   },
   {
     src: "/images/tvkselfimg.jpeg",
-    name: "சமூக நீதி களம்",
-    title: "Social Justice in Action",
-    label: "Universal Welfare",
-    labelTamil: "அனைவருக்குமான நலன்",
+    name: "கவுன்சிலர் மணிகண்டன் ராவ்",
+    title: "Councillor Manikandan Rao",
+    label: "Ward Councillor",
+    labelTamil: "வார்டு கவுன்சிலர்",
   },
 ];
 
@@ -256,6 +266,7 @@ export default function DravidianModel() {
   const [paused, setPaused] = useState(false);
   const [activePillar, setActivePillar] = useState(0);
   const pillarsRef = useRef(null);
+  const touchX = useRef(null);
   const total = modelImages.length;
   const activeLeader = mod(pos, total);
 
@@ -268,6 +279,20 @@ export default function DravidianModel() {
       if (diff > total / 2) diff -= total;
       return p + diff;
     });
+
+  // Swipe support for phones
+  const onTouchStart = (e) => {
+    touchX.current = e.touches[0].clientX;
+    setPaused(true);
+  };
+
+  const onTouchEnd = (e) => {
+    if (touchX.current == null) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (Math.abs(dx) > 40) goLeader(dx < 0 ? 1 : -1); // swipe left = next
+    setPaused(false);
+  };
 
   // Autoplay: off for reduced-motion users, paused while hovering/focusing the carousel
   useEffect(() => {
@@ -371,7 +396,13 @@ export default function DravidianModel() {
             <span className="lc-head-count">{activeLeader + 1} / {total}</span>
           </div>
 
-          <div className="lc-stage" aria-live="polite" aria-label="Movement leadership photographs">
+          <div
+            className="lc-stage"
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+            aria-live="polite"
+            aria-label="Movement leadership photographs"
+          >
             {OFFSETS.map((offset) => {
               const v = pos + offset; // virtual index; key stays with the card as it moves
               return (

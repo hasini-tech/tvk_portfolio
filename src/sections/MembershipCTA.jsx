@@ -33,11 +33,6 @@ export default function MembershipCTA() {
       <div className="wrap">
         <div className="membership-banner">
           <div className="membership-bg-glow" aria-hidden="true" />
-          <div className="membership-flag-strip" aria-hidden="true">
-            <span className="strip-red" />
-            <span className="strip-yellow" />
-            <span className="strip-red" />
-          </div>
 
           <div className="membership-content">
             <div className="membership-badge">
