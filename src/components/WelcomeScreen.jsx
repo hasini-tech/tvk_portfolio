@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale } from "../hooks.js";
 
-const VIDEO_SRC = "/video/tvkvideo.mp4";
+const VIDEO_SRC = "/video/tvkkk.mp4";
 const SLIDE_MS = 700;
 const PORTRAIT_QUERY = "(max-aspect-ratio: 1/1)";
 
