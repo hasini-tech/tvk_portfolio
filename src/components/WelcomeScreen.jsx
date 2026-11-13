@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale } from "../hooks.js";
 
 const VIDEO_SRC = "/video/tvkkk.mp4";
+const AUDIO_SRC = "/audio/audio.mp3";
 const SLIDE_MS = 700;
 const PORTRAIT_QUERY = "(max-aspect-ratio: 1/1)";
 
@@ -26,22 +27,50 @@ export default function WelcomeScreen() {
 
   const [leaving, setLeaving] = useState(false);
   const [visible, setVisible] = useState(true);
-  const [muted, setMuted] = useState(true);
-  const [needsTap, setNeedsTap] = useState(false);
 
   const videoRef = useRef(null);
   const bgRef = useRef(null);
+  const audioRef = useRef(null);
   const timerRef = useRef(null);
+  const fadeRef = useRef(null);
   const finishedRef = useRef(false);
+  const audioOkRef = useRef(false); // true once the music is actually playing
+
+  const stopAudio = useCallback(() => {
+    const audio = audioRef.current;
+    window.clearInterval(fadeRef.current);
+    if (!audio) return;
+    // Quick fade-out so the music doesn't cut off abruptly
+    const steps = 10;
+    const stepMs = SLIDE_MS / steps;
+    const startVol = audio.volume;
+    let i = 0;
+    fadeRef.current = window.setInterval(() => {
+      i += 1;
+      audio.volume = Math.max(0, startVol * (1 - i / steps));
+      if (i >= steps) {
+        window.clearInterval(fadeRef.current);
+        audio.pause();
+      }
+    }, stepMs);
+  }, []);
 
   const finish = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
     setLeaving(true);
+    stopAudio();
     timerRef.current = window.setTimeout(() => setVisible(false), SLIDE_MS);
-  }, []);
+  }, [stopAudio]);
 
-  useEffect(() => () => window.clearTimeout(timerRef.current), []);
+  useEffect(
+    () => () => {
+      window.clearTimeout(timerRef.current);
+      window.clearInterval(fadeRef.current);
+      audioRef.current?.pause();
+    },
+    []
+  );
 
   // Lock page scroll while visible
   useEffect(() => {
@@ -61,17 +90,59 @@ export default function WelcomeScreen() {
   const tryPlay = useCallback(() => {
     const main = videoRef.current;
     const bg = bgRef.current;
+    const audio = audioRef.current;
     if (bg) bg.play()?.catch(() => {});
-    if (!main) return;
-    main
-      .play()
-      ?.then(() => setNeedsTap(false))
-      .catch(() => setNeedsTap(true));
+    // Muted video autoplay is always allowed
+    if (main) main.play()?.catch(() => {});
+
+    // Music is handled on its own so a blocked audio never affects the video
+    if (audio && !audioOkRef.current) {
+      audio.muted = false;
+      audio.volume = 1;
+      Promise.resolve(audio.play())
+        .then(() => {
+          audioOkRef.current = true;
+        })
+        .catch(() => {
+          audioOkRef.current = false;
+        });
+    }
   }, []);
 
   useEffect(() => {
     tryPlay();
   }, [isPortrait, tryPlay]);
+
+  // Browsers only allow sound after a user gesture. Retry on the first real one.
+  // (iOS Safari only counts click / touchend / keydown, not touchstart or pointerdown.)
+  useEffect(() => {
+    if (!visible) return;
+    const onGesture = () => {
+      if (!audioOkRef.current) tryPlay();
+    };
+    const events = ["click", "touchend", "pointerup", "keydown"];
+    events.forEach((ev) => window.addEventListener(ev, onGesture, { passive: true }));
+    return () => events.forEach((ev) => window.removeEventListener(ev, onGesture));
+  }, [visible, tryPlay]);
+
+  // Pause when the tab/app goes to background, resume when it returns (saves battery on phones)
+  useEffect(() => {
+    if (!visible) return;
+    const onVisibility = () => {
+      const main = videoRef.current;
+      const bg = bgRef.current;
+      const audio = audioRef.current;
+      if (document.hidden) {
+        main?.pause();
+        bg?.pause();
+        audio?.pause();
+      } else if (!finishedRef.current) {
+        tryPlay();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [visible, tryPlay]);
 
   // Keep the blurred copy in sync with the main video
   const syncBg = () => {
@@ -88,23 +159,21 @@ export default function WelcomeScreen() {
     return () => window.removeEventListener("keydown", onKey);
   }, [finish]);
 
-  function toggleMute() {
-    const next = !muted;
-    if (videoRef.current) videoRef.current.muted = next;
-    setMuted(next);
-  }
-
   if (!visible) return null;
 
   const pillBtn =
     "min-h-11 min-w-11 cursor-pointer rounded-full border-0 bg-black/60 px-4 py-2 " +
-    "text-[clamp(12px,3.4vw,15px)] text-white backdrop-blur-sm active:scale-95";
+    "text-[clamp(12px,3.4vw,15px)] font-medium text-white backdrop-blur-sm " +
+    "active:scale-95 focus-visible:outline-2 focus-visible:outline-white";
 
   return (
     <div
       className="fixed inset-0 z-300 select-none overflow-hidden overscroll-none bg-black will-change-transform"
       style={{
+        // svh/dvh avoid the mobile browser address-bar jump
         height: "100dvh",
+        minHeight: "-webkit-fill-available",
+        width: "100vw",
         transform: leaving ? "translateY(-100%)" : "translateY(0)",
         transition: `transform ${SLIDE_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`,
         touchAction: "none",
@@ -113,12 +182,15 @@ export default function WelcomeScreen() {
       aria-modal="true"
       aria-label={ta ? "TVK போர்ட்ஃபோலியோ வரவேற்பு வீடியோ" : "TVK portfolio welcome video"}
     >
-      {/* Phone: blurred, enlarged copy fills the whole screen behind the video */}
+      {/* Background music: plays until the welcome screen closes */}
+      <audio ref={audioRef} src={AUDIO_SRC} loop preload="auto" onCanPlay={tryPlay} />
+
+      {/* Phone (portrait): blurred, enlarged copy fills the screen behind the video */}
       {isPortrait && (
         <video
           ref={bgRef}
           src={VIDEO_SRC}
-          className="absolute inset-0 h-full w-full scale-150 object-cover opacity-70 blur-2xl"
+          className="absolute inset-0 h-full w-full scale-125 object-cover opacity-70 blur-xl"
           autoPlay
           muted
           loop
@@ -129,7 +201,7 @@ export default function WelcomeScreen() {
         />
       )}
 
-      {/* Main video: full frame on phones (contain), full screen on desktop (cover) */}
+      {/* Main video: full frame on phones (contain), full screen on desktop/landscape (cover) */}
       <video
         ref={videoRef}
         src={VIDEO_SRC}
@@ -137,7 +209,7 @@ export default function WelcomeScreen() {
           isPortrait ? "object-contain" : "object-cover"
         }`}
         autoPlay
-        muted={muted}
+        muted
         playsInline
         webkit-playsinline="true"
         preload="auto"
@@ -148,6 +220,7 @@ export default function WelcomeScreen() {
         onError={finish}
       />
 
+      {/* Skip button: kept clear of notches and rounded corners */}
       <div
         className="absolute z-2 flex items-center gap-2"
         style={{
@@ -155,26 +228,10 @@ export default function WelcomeScreen() {
           right: "max(12px, env(safe-area-inset-right))",
         }}
       >
-        <button type="button" className={pillBtn} onClick={toggleMute} aria-pressed={!muted}>
-          {muted ? (ta ? "🔇 ஒலி இயக்கு" : "🔇 Unmute") : ta ? "🔊 ஒலி நிறுத்து" : "🔊 Mute"}
-        </button>
         <button type="button" className={pillBtn} onClick={finish}>
           {ta ? "தவிர் ›" : "Skip ›"}
         </button>
       </div>
-
-      {needsTap && (
-        <button
-          type="button"
-          onClick={tryPlay}
-          className="absolute inset-0 z-1 flex cursor-pointer items-center justify-center border-0 bg-black/40 text-white"
-          aria-label={ta ? "வீடியோவை இயக்கு" : "Play video"}
-        >
-          <span className="rounded-full bg-black/70 px-6 py-3 text-lg backdrop-blur-sm">
-            ▶ {ta ? "இயக்கு" : "Play"}
-          </span>
-        </button>
-      )}
     </div>
   );
 }
